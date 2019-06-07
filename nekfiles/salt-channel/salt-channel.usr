@@ -167,9 +167,10 @@ c      param(54) = 3
 c      param(55) = 1
       dh=0.6241
 c xm1 - x mesh
-      cmult(xm1,1./dh,ntot)    ! scale x mesh by hyd dia in mesh units (in)
-      cmult(ym1,1./dh,ntot)
-      cmult(zm1,1./dh,ntot)
+c scale x mesh by hyd dia in mesh units (in)
+      call cmult(xm1,1./dh,ntot)    
+      call cmult(ym1,1./dh,ntot)
+      call cmult(zm1,1./dh,ntot)
       
       return
       end
