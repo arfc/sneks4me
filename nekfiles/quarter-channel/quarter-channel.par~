@@ -3,10 +3,9 @@
 #
 [GENERAL]
 stopAt = endTime
-endTime  = 0.1
+endTime  = 200
 
-#variableDT = yes
-dt = 1.0e-3
+variableDT = yes
 targetCFL = 0.4
 timeStepper = bdf2
 
