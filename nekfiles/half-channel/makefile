@@ -1,4 +1,4 @@
-### makefile automatically created by makenek 06/10/2019 11:29:34 ###
+### makefile automatically created by makenek 06/10/2019 14:30:46 ###
 BINNAME=nek5000
 LIBNAME=libnek5000.a
 CASENAME:=half-channel
@@ -10,7 +10,7 @@ OBJDIR=obj
 MPI:=1
 CMT:=0
 NEKNEK:=0
-FC:=mpif90
+FC:=mpif77
 CC:=mpicc
 FFLAGS:= -fdefault-real-8 -fdefault-double-8 -cpp
 CFLAGS:=
