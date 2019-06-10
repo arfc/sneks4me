@@ -3,14 +3,15 @@
 #
 [GENERAL]
 stopAt = endTime
-endTime  = 20
+endTime  = 0.1
 
-variableDT = yes
+#variableDT = yes
+dt = 0.001
 targetCFL = 0.4
-timeStepper = bdf3
+timeStepper = bdf2
 
 writeControl = runTime
-writeInterval = 1
+writeInterval = 0.01
 
 [PROBLEMTYPE]
 equation = incompNS
