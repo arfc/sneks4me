@@ -1,4 +1,4 @@
-### makefile automatically created by makenek 06/10/2019 15:51:55 ###
+### makefile automatically created by makenek 06/10/2019 17:42:42 ###
 BINNAME=nek5000
 LIBNAME=libnek5000.a
 CASENAME:=quarter-channel

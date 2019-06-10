@@ -3,7 +3,7 @@
 #
 [GENERAL]
 stopAt = endTime
-endTime  = 0.1
+endTime  = 10
 
 variableDT = yes
 targetCFL = 0.4
