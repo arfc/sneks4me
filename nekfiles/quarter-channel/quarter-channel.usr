@@ -159,6 +159,8 @@ c      implicit none
                   cbc(ifc,iel,1) = 'O'
               elseif (id_face.eq.300) then   ! SideWalls
                   cbc(ifc,iel,1) = 'W'
+              elseif (id_face.eq.400) then   ! Interior
+                  cbc(ifc,iel,1) = 'SYM'	
               endif
           enddo
       enddo
