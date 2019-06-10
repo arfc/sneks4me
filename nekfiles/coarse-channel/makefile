@@ -1,4 +1,4 @@
-### makefile automatically created by makenek 06/09/2019 16:17:20 ###
+### makefile automatically created by makenek 06/10/2019 11:14:48 ###
 BINNAME=nek5000
 LIBNAME=libnek5000.a
 CASENAME:=coarse-channel
