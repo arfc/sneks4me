@@ -8728,3 +8728,15 @@ mpif77  -O2 -fdefault-real-8 -fdefault-double-8 -cpp -DMPI -DUNDERSCORE -DTIMER 
 2459511	  16588	1762231048	1764707147	692f4b4b	nek5000
 
 
+build 3rd-party software ...
+'half-channel.usr' -> 'half-channel.f'
+mpif90 -c  -O2 -fdefault-real-8 -fdefault-double-8 -cpp -DMPI -DUNDERSCORE -DTIMER -I/home/achubbz/Nek5000/run/half-channel -I/home/achubbz/Nek5000/core -I./ /home/achubbz/Nek5000/run/half-channel/half-channel.f  -o obj/half-channel.o 
+mpif90  -O2 -fdefault-real-8 -fdefault-double-8 -cpp -DMPI -DUNDERSCORE -DTIMER -I/home/achubbz/Nek5000/run/half-channel -I/home/achubbz/Nek5000/core -I./ -o nek5000 obj/half-channel.o obj/drive.o obj/drive1.o obj/drive2.o obj/plan5.o obj/plan4.o obj/bdry.o obj/coef.o obj/conduct.o obj/connect1.o obj/connect2.o obj/dssum.o obj/edgec.o obj/eigsolv.o obj/gauss.o obj/genxyz.o obj/navier1.o obj/makeq.o obj/navier0.o obj/navier2.o obj/navier3.o obj/navier4.o obj/prepost.o obj/speclib.o obj/map2.o obj/mvmesh.o obj/ic.o obj/gfldr.o obj/ssolv.o obj/planx.o obj/math.o obj/mxm_wrapper.o obj/hmholtz.o obj/gfdm_par.o obj/gfdm_op.o obj/gfdm_solve.o obj/subs1.o obj/subs2.o obj/genbox.o obj/gmres.o obj/hsmg.o obj/convect.o obj/induct.o obj/perturb.o obj/navier5.o obj/navier6.o obj/navier7.o obj/navier8.o obj/fast3d.o obj/fasts.o obj/calcz.o obj/byte.o obj/chelpers.o obj/byte_mpi.o obj/postpro.o obj/intp_usr.o obj/cvode_driver.o obj/nek_comm.o obj/vprops.o obj/makeq_aux.o obj/papi.o obj/nek_in_situ.o obj/reader_rea.o obj/reader_par.o obj/reader_re2.o obj/finiparser.o obj/iniparser.o obj/dictionary.o obj/hpf.o obj/mxm_std.o obj/comm_mpi.o obj/singlmesh.o obj/blas.o obj/dsygv.o -L/home/achubbz/Nek5000/3rd_party/gslib/lib -lgs 
+
+#############################################################
+#                  Compilation successful!                  #
+#############################################################
+   text	   data	    bss	    dec	    hex	filename
+2432492	  15780	1762231016	1764679288	692ede78	nek5000
+
+
