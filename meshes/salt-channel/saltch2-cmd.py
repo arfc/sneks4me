@@ -21,3 +21,6 @@ volume 1 redistribute nodes off
 volume 1 scheme Sweep  source surface 40   target surface 41  sweep transform least squares 
 volume 1 autosmooth target on  fixed imprints off  smart smooth off 
 mesh volume 1
+
+block 100 add volume 1 6
+block 100 element type hex27
