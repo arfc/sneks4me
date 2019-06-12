@@ -1,5 +1,5 @@
 SOURCE_ROOT=/home/achubbz/Nek5000
-FC=mpif77
+FC=mpif90
 FFLAGS= -fdefault-real-8 -fdefault-double-8 -cpp
 CC=mpicc
 CFLAGS=
