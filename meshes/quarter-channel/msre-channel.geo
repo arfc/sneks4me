@@ -68,3 +68,4 @@ Physical Surface("outlet",200) = {58,36,80,124,102} ;
 Physical Surface("wall",300) = {49,75,93} ;
 Physical Surface("sym1",400) = {53,35} ;
 Physical Surface("sym2",500) = {89,123,23} ;
+Physical Volume("fluid",4) = {1,2,3,4,5};
