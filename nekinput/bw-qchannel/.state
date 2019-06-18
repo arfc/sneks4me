@@ -1,6 +1,9 @@
-SOURCE_ROOT=/home/achubbz/Nek5000
-FC=mpif90
-FFLAGS= -fdefault-real-8 -fdefault-double-8 -cpp
+NEK_SOURCE_ROOT=/home/achubbz/Nek5000
+FC=mpif77
+FFLAGS=
+FCPP=-cpp
+FR8=-fdefault-real-8 -fdefault-double-8
+FF77=-std=legacy
 CC=mpicc
 CFLAGS=
-PPLIST= MPI UNDERSCORE TIMER
+PPLIST= MPI UNDERSCORE GLOBAL_LONG_LONG TIMER
