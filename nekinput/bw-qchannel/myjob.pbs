@@ -11,7 +11,7 @@
 ### note that you are on a PBS MOM node and not running interactively on a
 ### compute node
 
-nekdir=/projects/sciteam/bahg/Nek5000/bin/
+nekdir=/projects/sciteam/bahg/Nek5000/bin/nekmpi
 ipfile=/projects/sciteam/bahg/Nek5000/run/bw-qchannel/quarter-channel
 
 cd $PBS_O_WORKDIR
@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 module swap PrgEnv-cray PrgEnv-gnu
 export OMP_NUM_THREADS=32
 
-aprun -n 32 -d 32 $nekdir -omp 32 $ipfile
+aprun -n 32 -d 32 $nekdir $ipfile 32
