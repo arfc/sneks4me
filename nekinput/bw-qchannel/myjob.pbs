@@ -12,7 +12,7 @@
 ### compute node
 
 nekdir=/projects/sciteam/bahg/Nek5000/bin/
-ipfile=/scratch/sciteam/chaube/sneks4me/nekinput/
+ipfile=/projects/sciteam/bahg/Nek5000/run/bw-qchannel/quarter-channel
 
 cd $PBS_O_WORKDIR
 
@@ -20,4 +20,4 @@ cd $PBS_O_WORKDIR
 module swap PrgEnv-cray PrgEnv-gnu
 export OMP_NUM_THREADS=32
 
-aprun -n 32 -d 32 $sss2dir -omp 32 $ipfile
+aprun -n 32 -d 32 $nekdir -omp 32 $ipfile
