@@ -1,0 +1,18 @@
+----------------------------------------
+Begin Torque Prologue on nid27637
+at Tue Jun 18 15:49:28 CDT 2019
+Job Id:			10059972.bw
+Username:		chaube
+Group:			ILL_bahg
+Job name:		tap-test
+Requested resources:	nodes=32:ppn=32:xe,walltime=00:30:00,neednodes=32:ppn=32:xe
+Queue:			debug
+Account:		bahg
+End Torque Prologue:  0.131 elapsed
+----------------------------------------
+
+
+
+
+execve error: Exec format error
+[NID 03528] 2019-06-18 15:49:34 Apid 78475592: cannot execute: exit(107) exec failed
