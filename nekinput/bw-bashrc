@@ -1,9 +1,9 @@
 test -s ~/.alias && . ~/.alias || true
-module swap PrgEnv-cray PrgEnv-pgi
 export PATH=/projects/sciteam/bahg/Nek5000/bin:$PATH
 #export PATH=/u/sciteam/chaube/Nek5000/bin:$PATH
 export NEK_SOURCE_ROOT=/projects/sciteam/bahg/Nek5000
 #export NEK_SOURCE_ROOT=/u/sciteam/chaube/Nek5000
 export FC="ftn"
 export CC="cc"
+module swap PrgEnv-cray PrgEnv-pgi
 
