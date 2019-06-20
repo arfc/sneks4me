@@ -1,0 +1,5 @@
+ModuleCmd_Switch.c(179):ERROR:152: Module 'PrgEnv-cray' is currently not loaded
+mv: cannot stat `quarter-channel.log': No such file or directory
+mv: cannot stat `quarter-channel.his': No such file or directory
+mv: cannot stat `quarter-channel.sch': No such file or directory
+ln: accessing `quarter-channel.log.32': No such file or directory

@@ -1,0 +1,231 @@
+ar -cr libblasLapack.a *.o
+gslib-1.0.4/.travis.yml
+gslib-1.0.4/LICENSE
+gslib-1.0.4/Makefile
+gslib-1.0.4/README.md
+gslib-1.0.4/RELEASE.md
+gslib-1.0.4/src/
+gslib-1.0.4/src/c99.h
+gslib-1.0.4/src/comm.c
+gslib-1.0.4/src/comm.h
+gslib-1.0.4/src/crystal.c
+gslib-1.0.4/src/crystal.h
+gslib-1.0.4/src/fail.c
+gslib-1.0.4/src/fail.h
+gslib-1.0.4/src/fcrystal.c
+gslib-1.0.4/src/findpts.c
+gslib-1.0.4/src/findpts.h
+gslib-1.0.4/src/findpts_el.h
+gslib-1.0.4/src/findpts_el_2.c
+gslib-1.0.4/src/findpts_el_3.c
+gslib-1.0.4/src/findpts_imp.h
+gslib-1.0.4/src/findpts_local.c
+gslib-1.0.4/src/findpts_local.h
+gslib-1.0.4/src/findpts_local_imp.h
+gslib-1.0.4/src/gen_poly_imp.c
+gslib-1.0.4/src/gs.c
+gslib-1.0.4/src/gs.h
+gslib-1.0.4/src/gs_defs.h
+gslib-1.0.4/src/gs_local.c
+gslib-1.0.4/src/gs_local.h
+gslib-1.0.4/src/gslib.h
+gslib-1.0.4/src/lob_bnd.c
+gslib-1.0.4/src/lob_bnd.h
+gslib-1.0.4/src/mem.h
+gslib-1.0.4/src/name.h
+gslib-1.0.4/src/obbox.c
+gslib-1.0.4/src/obbox.h
+gslib-1.0.4/src/poly.c
+gslib-1.0.4/src/poly.h
+gslib-1.0.4/src/poly_imp.h
+gslib-1.0.4/src/sarray_sort.c
+gslib-1.0.4/src/sarray_sort.h
+gslib-1.0.4/src/sarray_transfer.c
+gslib-1.0.4/src/sarray_transfer.h
+gslib-1.0.4/src/sort.c
+gslib-1.0.4/src/sort.h
+gslib-1.0.4/src/sort_imp.h
+gslib-1.0.4/src/tensor.c
+gslib-1.0.4/src/tensor.h
+gslib-1.0.4/src/types.h
+gslib-1.0.4/tests/
+gslib-1.0.4/tests/comm_test.c
+gslib-1.0.4/tests/crystal_test.c
+gslib-1.0.4/tests/findpts_el_2_test.c
+gslib-1.0.4/tests/findpts_el_2_test2.c
+gslib-1.0.4/tests/findpts_el_3_test.c
+gslib-1.0.4/tests/findpts_el_3_test2.c
+gslib-1.0.4/tests/findpts_local_test.c
+gslib-1.0.4/tests/findpts_test.c
+gslib-1.0.4/tests/fortran/
+gslib-1.0.4/tests/fortran/f-igs.f
+gslib-1.0.4/tests/gs_test.c
+gslib-1.0.4/tests/gs_test_gop_blocking.c
+gslib-1.0.4/tests/gs_test_gop_nonblocking.c
+gslib-1.0.4/tests/gs_unique_test.c
+gslib-1.0.4/tests/lob_bnd_test.c
+gslib-1.0.4/tests/obbox_test.c
+gslib-1.0.4/tests/poly_test.c
+gslib-1.0.4/tests/rand_elt_test.h
+gslib-1.0.4/tests/run_tests.sh
+gslib-1.0.4/tests/sarray_sort_test.c
+gslib-1.0.4/tests/sarray_transfer_test.c
+gslib-1.0.4/tests/sort_test.c
+gslib-1.0.4/tests/sort_test2.c
++ make -j4 DESTDIR=.. MPI=1 MPIIO=1 ADDUS=1 USREXIT=0 BLAS=2
+CC -O2  -I./src  -DMPI -DUNDERSCORE -DGLOBAL_LONG_LONG -DPREFIX=gslib_ -DFPREFIX=fgslib_ -c src/gs.c -o src/gs.o
+CC -O2  -I./src  -DMPI -DUNDERSCORE -DGLOBAL_LONG_LONG -DPREFIX=gslib_ -DFPREFIX=fgslib_ -c src/sort.c -o src/sort.o
+CC -O2  -I./src  -DMPI -DUNDERSCORE -DGLOBAL_LONG_LONG -DPREFIX=gslib_ -DFPREFIX=fgslib_ -c src/sarray_transfer.c -o src/sarray_transfer.o
+CC -O2  -I./src  -DMPI -DUNDERSCORE -DGLOBAL_LONG_LONG -DPREFIX=gslib_ -DFPREFIX=fgslib_ -c src/sarray_sort.c -o src/sarray_sort.o
+"src/sarray_sort.c", line 16: error: a value of type "void *" cannot be used to
+          initialize an entity of type "char *const"
+    char *const ar = A, *const item = work;
+                     ^
+
+"src/sarray_sort.c", line 16: error: a value of type "void *" cannot be used to
+          initialize an entity of type "char *const"
+    char *const ar = A, *const item = work;
+                                      ^
+
+"src/sarray_sort.c", line 43: error: argument of type "void *" is incompatible
+          with parameter of type "unsigned int *"
+    sarray_permute_(size,A,n, buf->ptr,
+                              ^
+
+3 errors detected in the compilation of "src/sarray_sort.c".
+make: *** [src/sarray_sort.o] Error 2
+make: *** Waiting for unfinished jobs....
+"src/sort_imp.h", line 470: error: type definition is not allowed
+      const size_t count_off=align_as(uint,n*sizeof(T));
+                             ^
+
+"src/sort_imp.h", line 470: warning: conversion from pointer to smaller integer
+      const size_t count_off=align_as(uint,n*sizeof(T));
+                             ^
+
+"src/sort_imp.h", line 472: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      work = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 483: error: type definition is not allowed
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 483: warning: conversion from pointer to smaller integer
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 486: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      perm = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 497: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      perm = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 502: error: type definition is not allowed
+      const size_t count_off=align_as(uint,work_off+2*n*sizeof(sort_data));
+                             ^
+
+"src/sort_imp.h", line 502: warning: conversion from pointer to smaller integer
+      const size_t count_off=align_as(uint,work_off+2*n*sizeof(sort_data));
+                             ^
+
+"src/sort_imp.h", line 504: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      perm = buf->ptr;
+           ^
+
+"/opt/cray/mpt/7.5.0/gni/mpich-pgi/15.3/include/mpicxx.h", line 12:
+          catastrophic error: #error directive: "You cannot define MPI; that
+          name is reserved for the MPI namespace"
+  #error "You cannot define MPI; that name is reserved for the MPI namespace"
+   ^
+
+1 catastrophic error detected in the compilation of "src/sarray_transfer.c".
+Compilation terminated.
+make: *** [src/sarray_transfer.o] Error 2
+"/opt/cray/mpt/7.5.0/gni/mpich-pgi/15.3/include/mpicxx.h", line 12:
+          catastrophic error: #error directive: "You cannot define MPI; that
+          name is reserved for the MPI namespace"
+  #error "You cannot define MPI; that name is reserved for the MPI namespace"
+   ^
+
+1 catastrophic error detected in the compilation of "src/gs.c".
+Compilation terminated.
+make: *** [src/gs.o] Error 2
+"src/sort_imp.h", line 470: error: type definition is not allowed
+      const size_t count_off=align_as(uint,n*sizeof(T));
+                             ^
+
+"src/sort_imp.h", line 470: warning: conversion from pointer to smaller integer
+      const size_t count_off=align_as(uint,n*sizeof(T));
+                             ^
+
+"src/sort_imp.h", line 472: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned long long *"
+      work = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 483: error: type definition is not allowed
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 483: warning: conversion from pointer to smaller integer
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 486: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      perm = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 497: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      perm = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 502: error: type definition is not allowed
+      const size_t count_off=align_as(uint,work_off+2*n*sizeof(sort_data));
+                             ^
+
+"src/sort_imp.h", line 502: warning: conversion from pointer to smaller integer
+      const size_t count_off=align_as(uint,work_off+2*n*sizeof(sort_data));
+                             ^
+
+"src/sort_imp.h", line 504: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+      perm = buf->ptr;
+           ^
+
+"src/sort_imp.h", line 534: error: type definition is not allowed
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 534: warning: conversion from pointer to smaller integer
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 536: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+    perm = buf->ptr;
+         ^
+
+"src/sort_imp.h", line 534: error: type definition is not allowed
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 534: warning: conversion from pointer to smaller integer
+    size_t work_off=align_as(sort_data,n*sizeof(uint));
+                    ^
+
+"src/sort_imp.h", line 536: error: a value of type "void *" cannot be assigned
+          to an entity of type "unsigned int *"
+    perm = buf->ptr;
+         ^
+
+18 errors detected in the compilation of "src/sort.c".
+make: *** [src/sort.o] Error 2

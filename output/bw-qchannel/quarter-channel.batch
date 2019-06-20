@@ -1,0 +1,27 @@
+#!/bin/bash
+#PBS -q debug
+#PBS -l nodes=32:ppn=32:xe
+#PBS -l walltime=00:30:00
+#PBS -N quarter-channel
+#PBS -e quarter-channel.err
+#PBS -o quarter-channel.log.32
+#PBS -A bahg
+#PBS -M achaube2@illinois.edu
+. /opt/modules/default/etc/modules.sh
+module swap PrgEnv-cray PrgEnv-pgi
+cd /projects/sciteam/bahg/Nek5000/run/bw-qchannel
+echo quarter-channel > SESSION.NAME
+echo `pwd`'/' >> SESSION.NAME
+rm -f quarter-channel.his1
+rm -f quarter-channel.sch1
+rm -f quarter-channel.log1
+mv quarter-channel.log quarter-channel.log1
+mv quarter-channel.his quarter-channel.his1
+mv quarter-channel.sch quarter-channel.sch1
+rm -f logfile
+rm -f ioinfo
+sleep 5
+aprun -n 1024 -N 32 ./nek5000
+sleep 5
+ln quarter-channel.log.32 logfile
+exit 0;
