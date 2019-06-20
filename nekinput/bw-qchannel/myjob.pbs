@@ -11,8 +11,8 @@
 ### note that you are on a PBS MOM node and not running interactively on a
 ### compute node
 
-nekdir=/projects/sciteam/bahg/Nek5000/bin/nekmpi
-ipfile=/projects/sciteam/bahg/Nek5000/run/bw-qchannel/quarter-channel
+export nekdir=/projects/sciteam/bahg/Nek5000/bin/nekmpi
+export ipfile=/projects/sciteam/bahg/Nek5000/run/bw-qchannel/quarter-channel
 
 cd $PBS_O_WORKDIR
 
