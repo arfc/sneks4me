@@ -1,9 +1,0 @@
-NEK_SOURCE_ROOT=/projects/sciteam/bahg/Nek5000
-FC=ftn
-FFLAGS=
-FCPP=-Mpreprocess
-FR8=-r8
-FF77=
-CC=cc
-CFLAGS=
-PPLIST= MPI UNDERSCORE GLOBAL_LONG_LONG TIMER

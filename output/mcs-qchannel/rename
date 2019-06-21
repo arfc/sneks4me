@@ -1,9 +1,10 @@
 # script to rename nek output files
 # run ./rename <arg>, where <arg> is the increment in the last
 # two digits of the files
-for i in *.f000* ; do
+for i in *.f00* ; do
   n=$(($((10#${i: -3}))+$1))
   o=${i:0:-3}
-  new="${o}${n}"
+  new="${o}00${n}"
+  #echo "$new"
   mv "$i" "$new"
 done
