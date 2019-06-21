@@ -2,7 +2,7 @@
 
 echo  "#!/bin/bash"                                              > $1.batch
 
-echo  "#PBS -q debug"                                           >> $1.batch
+echo  "#PBS -q normal"                                           >> $1.batch
 
 echo  "#PBS -l nodes=$2:ppn=32:xe"                              >> $1.batch
 
