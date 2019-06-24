@@ -7,18 +7,19 @@
 #SRC="$SRC/"
 #echo "Enter file pattern to transfer from source directory [Ex:  \*.dat ]:"
 #read PATTERN
-DEST="5133a0d8-96bc-11e9-8e6d-029d279f7e24:/media/achaube/DATA/bw/"
-SRC="d59900ef-6d04-11e5-ba46-22000b92c6ec:/projects/sciteam/bahg/Nek5000/run/"
-PATTERN="tar"
-echo "checking source and file pattern...last 3 entries..."
-bwpy-environ globus ls --filter "~$PATTERN" $SRC | tail -3
+#DEST="2341a858-96cd-11e9-bf5c-0e4a062367b8:/home/achaube/bwop/2019-06-24.tar"
+DEST="2341a858-96cd-11e9-bf5c-0e4a062367b8:/home/achaube/bwop/bw-qchannel.tar"
+SRC="d59900ef-6d04-11e5-ba46-22000b92c6ec:/projects/sciteam/bahg/Nek5000/run/bw-qchannel.tar"
+PATTERN="\*.tar"
+#echo "checking source and file pattern...last 3 entries..."
+#bwpy-environ globus ls --filter "~$PATTERN" $SRC | tail -3
 echo "checking destination directory existence ... first 3 entries"
-gbwpy-environ lobus ls $DEST | head -3
+bwpy-environ globus ls $DEST | head -3
 echo "ctrl-c to quit, or press return to initiate transfer"
 read RESPONSE
-set -x
-for filename in `gbwpy-environ lobus ls --filter "~$PATTERN" $SRC`
-do
-   globus transfer -- $SRC$filename $DEST$filename
-done
-
+#set -x
+#for filename in `bwpy-environ globus ls --filter "~$PATTERN" $SRC`
+#do
+#   bwpy-environ globus transfer -- $SRC$filename $DEST$filename
+#done
+bwpy-environ globus transfer $SRC $DEST
