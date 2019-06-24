@@ -1,0 +1,24 @@
+#!/bin/bash
+#echo "Enter destination GO [ end#point:/path ] "
+#read DEST
+#DEST="$DEST/"
+#echo "Enter source GO [ end#point:/path ]"
+#read SRC
+#SRC="$SRC/"
+#echo "Enter file pattern to transfer from source directory [Ex:  \*.dat ]:"
+#read PATTERN
+DEST="5133a0d8-96bc-11e9-8e6d-029d279f7e24:/media/achaube/DATA/bw/"
+SRC="d59900ef-6d04-11e5-ba46-22000b92c6ec:/projects/sciteam/bahg/Nek5000/run/"
+PATTERN="tar"
+echo "checking source and file pattern...last 3 entries..."
+bwpy-environ globus ls --filter "~$PATTERN" $SRC | tail -3
+echo "checking destination directory existence ... first 3 entries"
+gbwpy-environ lobus ls $DEST | head -3
+echo "ctrl-c to quit, or press return to initiate transfer"
+read RESPONSE
+set -x
+for filename in `gbwpy-environ lobus ls --filter "~$PATTERN" $SRC`
+do
+   globus transfer -- $SRC$filename $DEST$filename
+done
+
