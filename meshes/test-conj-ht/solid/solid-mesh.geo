@@ -48,9 +48,9 @@ Plane Surface(3) = {3};
 Transfinite Surface {1,2,3};
 Recombine Surface {1,2,3};
 
-Transfinite Curve{5,6} = 6;
+Transfinite Curve{5,6} = 7;
 Transfinite Curve{7,8} = 3;
-Transfinite Curve{9,10} = 5;
+Transfinite Curve{9,10} = 7;
 Transfinite Curve{1,2,3,4} = 4;
 
 Extrude {0,0,h}{
@@ -58,3 +58,11 @@ Extrude {0,0,h}{
         Layers{n};
         Recombine;
 }
+
+Physical Surface("inlet",10) = {1,2,3} ;
+Physical Surface("outlet",20) = {32,54,76} ;
+Physical Surface("sym1",30) = {19} ; 
+Physical Surface("sym2",40) = {75} ; 
+Physical Surface("wall",50) = {23,49,71} ;
+Physical Surface("ext1",60) = {31,41,63} ;
+Physical Volume("solid",44) = {1,2,3} ;
