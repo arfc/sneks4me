@@ -109,7 +109,7 @@ c      implicit none
       ux   = 0.0
       uy   = 0.0
       uz   = 1.0
-      if(z==0) temp = 908.15 ! Inlet temp
+      temp = 908.15 ! Inlet temp
 
       return
       end
