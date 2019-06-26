@@ -69,7 +69,7 @@ c      implicit none
       integer e
 c     e = gllel(eg)
 
-      qvol   = 0.0
+      qvol   = 20000000.0 ! TM 728 - 14-31 MW/m3
 
       return
       end
@@ -91,7 +91,7 @@ c      if (cbc(iside,gllel(eg),ifield).eq.'v01')
       ux   = 0.0
       uy   = 0.0
       uz   = 1.0
-      temp = 908.15
+      if(z==0) temp = 908.15 ! Inlet temp
 
       return
       end
@@ -109,7 +109,7 @@ c      implicit none
       ux   = 0.0
       uy   = 0.0
       uz   = 1.0
-      temp = 908.15
+      if(z==0) temp = 908.15 ! Inlet temp
 
       return
       end
