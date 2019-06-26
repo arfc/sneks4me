@@ -91,7 +91,7 @@ c      if (cbc(iside,gllel(eg),ifield).eq.'v01')
       ux   = 0.0
       uy   = 0.0
       uz   = 0.0
-      temp = 908.15
+      temp = 950.0
 
       return
       end
@@ -109,7 +109,7 @@ c      implicit none
       ux   = 0.0
       uy   = 0.0
       uz   = 0.0
-      temp = 908.15
+      temp = 950.0
 
       return
       end
