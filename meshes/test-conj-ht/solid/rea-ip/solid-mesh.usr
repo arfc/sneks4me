@@ -156,18 +156,25 @@ c      implicit none
       do iel=1,nelv
           do ifc=1,2*ndim
               id_face = bc(5,ifc,iel,1)
+              bc(5,ifc,iel,2) = id_face
               if (id_face.eq.10) then       ! Inlet
-                  cbc(ifc,iel,2) = 't'
+                  cbc(ifc,iel,1) = 't  '
+                  cbc(ifc,iel,2) = 'I  '
               elseif (id_face.eq.20) then   ! Outlet
-                  cbc(ifc,iel,2) = 'O' 
+                  cbc(ifc,iel,1) = 't  '
+                  cbc(ifc,iel,2) = 'I  ' 
               elseif (id_face.eq.30) then   ! SYM
+                  cbc(ifc,iel,1) = 't  '
                   cbc(ifc,iel,2) = 'SYM'
               elseif (id_face.eq.40) then   ! SYM
+                  cbc(ifc,iel,1) = 't  '
                   cbc(ifc,iel,2) = 'SYM'
       	      elseif (id_face.eq.50) then   ! Interior wall
-                  cbc(ifc,iel,2) = 'E'
+                  cbc(ifc,iel,1) = 't  '
+                  cbc(ifc,iel,2) = 'E  '
               elseif (id_face.eq.60) then   ! Exterior
-                  cbc(ifc,iel,2) = 'I'
+                  cbc(ifc,iel,1) = 't  '
+                  cbc(ifc,iel,2) = 'I  '
               endif
           enddo
       enddo
