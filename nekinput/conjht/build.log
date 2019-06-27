@@ -1,0 +1,14 @@
+ar -cr libblasLapack.a *.o
+'testop.usr' -> 'testop.f'
+mpif77  -O2 -cpp -fdefault-real-8 -fdefault-double-8 -std=legacy  -DMPI -DUNDERSCORE -DGLOBAL_LONG_LONG -DTIMER -I/home/achaube/Nek5000/run/conjht -I/home/achaube/Nek5000/core -I./ -I /home/achaube/Nek5000/core/experimental  -c /home/achaube/Nek5000/run/conjht/testop.f
+building libnek5000.a ... ar: `u' modifier ignored since `D' is the default (see `U')
+done
+mpif77  -O2 -cpp -fdefault-real-8 -fdefault-double-8 -std=legacy  -DMPI -DUNDERSCORE -DGLOBAL_LONG_LONG -DTIMER -I/home/achaube/Nek5000/run/conjht -I/home/achaube/Nek5000/core -I./ -I /home/achaube/Nek5000/core/experimental -o nek5000 /home/achaube/Nek5000/core/drive.f /home/achaube/Nek5000/run/conjht/testop.o libnek5000.a -L/home/achaube/Nek5000/3rd_party/blasLapack -lblasLapack -L/home/achaube/Nek5000/3rd_party/gslib/lib -lgs -Wl,--allow-multiple-definition
+
+
+#############################################################
+#                  Compilation successful!                  #
+#############################################################
+   text	   data	    bss	    dec	    hex	filename
+1805396	  17380	1337495072	1339317848	4fd45e58	nek5000
+
