@@ -1,6 +1,7 @@
 l1 = 0.4 ;
 l2 = 1.0 ;
 r = 0.2 ;
+pi = 22.0/7.0 ;
 
 Point(0) = {0,0,0} ;
 Point(1) = {0,l2-r,0};
@@ -60,3 +61,8 @@ Plane Surface(6) = {6};
 
 Transfinite Surface {1,2,3,4,5,6};
 Recombine Surface {1,2,3,4,5,6};
+
+Extrude { {r-l2,0,0},
+          {0,0,1},
+          {0,l1,0},
+          pi/2.0 } {1,2,3,4,5,6}
