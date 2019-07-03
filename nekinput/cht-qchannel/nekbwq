@@ -1,0 +1,77 @@
+#!/bin/bash
+
+echo  "#!/bin/bash"                                              > $1.batch
+
+echo  "#PBS -q normal"                                           >> $1.batch
+
+echo  "#PBS -l nodes=$2:ppn=32:xe"                              >> $1.batch
+
+echo  "#PBS -l walltime=00:$3:00"                                >> $1.batch
+
+echo  "#PBS -N $1"                                              >> $1.batch
+
+echo  "#PBS -e $1.err"                                          >> $1.batch
+
+echo  "#PBS -o $1.log.$2"                                       >> $1.batch
+
+echo  "#PBS -A bahg"                                             >> $1.batch
+
+echo  "#PBS -M achaube2@illinois.edu"                           >> $1.batch
+
+echo  ". /opt/modules/default/etc/modules.sh"                   >> $1.batch
+
+echo "module swap PrgEnv-cray PrgEnv-pgi"                       >> $1.batch
+
+echo  cd `pwd`                                                  >> $1.batch
+
+echo  "echo" $1      ">"  SESSION.NAME                          >> $1.batch
+
+echo  "echo \`pwd\`'/' >> SESSION.NAME"                         >> $1.batch
+
+echo  rm -f  $1.his1                                            >> $1.batch
+
+echo  rm -f  $1.sch1                                            >> $1.batch
+
+echo  rm -f  $1.log1                                            >> $1.batch
+
+echo  mv $1.log $1.log1                                         >> $1.batch
+
+echo  mv $1.his $1.his1                                         >> $1.batch
+
+echo  mv $1.sch $1.sch1                                         >> $1.batch
+
+echo  rm -f logfile                                             >> $1.batch
+
+echo  rm -f ioinfo                                              >> $1.batch
+
+echo  sleep 5                                                   >> $1.batch
+
+core=$((32*$2))
+
+echo  aprun -n $core -N 32 "./nek5000"                          >> $1.batch
+
+echo  sleep 5                                                   >> $1.batch
+
+echo  ln $1.log.$2 logfile                                      >> $1.batch
+
+echo  "exit 0;"                                                 >> $1.batch
+
+echo
+
+echo
+
+echo
+
+cat $1.batch
+
+echo
+
+echo
+
+qsub  $1.batch
+
+sleep 3
+
+qstat -a | grep chaube
+
+ln $1.log.$2 logfile
