@@ -69,7 +69,7 @@ c      implicit none
       integer e
 c     e = gllel(eg)
 
-      qvol = 10.0
+      qvol = 1.0
       if (eg.gt.nelgv) qvol = 0.0 ! glob el id > no. of el in glob v mesh
  
       return
@@ -91,7 +91,7 @@ c      implicit none
       ux   = 0.0
       uy   = 0.0
       uz   = 1.0
-      temp = 1.0
+      temp = 0.908
 
       e = gllel(eg)
 
@@ -124,8 +124,9 @@ c      implicit none
       ux   = 0.0
       uy   = 0.0
       uz   = 1.0
-      temp = 0.0
-
+      
+      temp = 0.908
+      if (eg.gt.nelgv) qvol = 0.908 ! glob el id > no. of el in glob v mesh
 c      do iel=1,nelv
 c          do ifc=1,2*ndim
 c              id_face = bc(5,ifc,iel,1)
