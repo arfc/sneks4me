@@ -69,7 +69,7 @@ c      implicit none
       integer e
 c     e = gllel(eg)
 
-      qvol = 0.0509
+      qvol = 0.0002276831052
       if (eg.gt.nelgv) qvol = 0.0 ! glob el id > no. of el in glob v mesh
  
       return
