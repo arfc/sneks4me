@@ -123,21 +123,19 @@ Plane Surface(12) = {12};
 Line Loop(13) = {34,32,33,-20};
 Plane Surface(13) = {13};
 
+Transfinite Surface {6,7,8,9,10,11,12,13};
+Recombine Surface {6,7,8,9,10,11,12,13};
 
-
+Transfinite Curve{18,16,23,27,30} =7;
+Transfinite Curve{21,-19,-25,-28} = 8 Using Progression 1.3;
+Transfinite Curve{15,17,20,32} = 7;
+Transfinite Curve{22,24,26,31} = 3;
+Transfinite Curve{33,34,35,29} = 7; //only set that's conformity independent
 
 
 
 
 /*
-Line Loop(6) = {15,16,17,18};
-Plane Surface(6) = {6};
-
-Transfinite Surface {6};
-Recombine Surface {6};
-
-Transfinite Curve{4,2,13,12} =7;
-
 Extrude {0,0,h}{
         Surface {1,2,3,4,5};
 	Layers{n};
