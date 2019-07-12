@@ -7,11 +7,12 @@ my = Sqrt(r^2 - ((mx-bx)^2));
 cy = 0.193649;
 h =63; //channel height in inches
 n = 63; //no. of vertical layers 
-ph = 10; //plenum height
+hp = 10; //plenum height
+np = 5; //plenum vertical layers
 gl = 0.8; //graphite length, from graphite mesh
 gw = 0.4; //graphite width, from graphite mesh
 
-/*
+
 Point(1) = {0,0,0};
 Point(2) = {bx,0,0};
 Point(3) = {l+r,0,0};
@@ -60,7 +61,7 @@ Transfinite Curve{4,2,13,12} =7;
 Transfinite Curve{7,-5,-9,-11} = 8 Using Progression 1.3;
 Transfinite Curve{1,3,6} = 7;
 Transfinite Curve{14,8,10} = 3;
-*/
+
 //plenum begins here
 
 Point(11) = {0,0,h};
@@ -132,19 +133,26 @@ Transfinite Curve{15,17,20,32} = 7;
 Transfinite Curve{22,24,26,31} = 3;
 Transfinite Curve{33,34,35,29} = 7; //only set that's conformity independent
 
-
-
-
-/*
 Extrude {0,0,h}{
         Surface {1,2,3,4,5};
 	Layers{n};
 	Recombine;
 }
 
+Extrude {0,0,hp}{
+        Surface {6,7,8,9,10,11,12,13};
+	Layers{np};
+	Recombine;
+}
+
 Physical Surface("inlet",100) = {1,2,3,4,5} ;
-Physical Surface("outlet",200) = {58,36,80,124,102} ;
-Physical Surface("wall",300) = {49,75,93} ;
-Physical Surface("sym1",400) = {53,35} ;
-Physical Surface("sym2",500) = {89,123,23} ;
-Physical Volume("fluid",4) = {1,2,3,4,5};*/
+Physical Surface("out1",200) = {154,198,242,176,220,308,286,264} ;
+Physical Surface("out2",300) = {303,175,153} ;
+Physical Surface("out3",400) = {141,185,229,255} ;
+Physical Surface("out4",500) = {259} ;
+Physical Surface("out5",600) = {299,281} ;
+Physical Surface("wall1",700) = {69,103,90} ;
+Physical Surface("wall2",800) = {11,12,13} ;
+Physical Surface("sym1",900) = {73,56} ;
+Physical Surface("sym2",1000) = {44,132,99} ;
+Physical Volume("fluid",10) = {1,2,3,4,5,6,7,8,9,10,11,12,13};
