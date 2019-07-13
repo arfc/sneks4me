@@ -1,0 +1,12 @@
+##!/bin/bash
+# script to setup newrea.out cht mesh generation from a gmsh .geo files
+# arg 1 = working director
+# arg 2 = name of geo file (exclude .geo)
+# arg 3 = name of .msh output file (exclude.msh)
+cd $1
+gmsh $2".geo" -3 -order 2 -o $3".msh" -format msh22
+gmsh2nek << EOF
+3
+$3
+0
+EOF
