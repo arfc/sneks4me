@@ -239,9 +239,72 @@ C     Primitive Variables
 
 c     call copy(prlag,pr,n2)  no longer necessary as of commit 6616c87a0f9ecd946701dc7e43b997350a2a57b9
 
-      format(a15,5a13)
-      format(a15,5es13.4)
-      format(a15,3es13.4,2a13)
+ 254  format(a15,5a13)
+ 255  format(a15,5es13.4)
+ 256  format(a15,3es13.4,2a13)
+
+      return
+      end
+c-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      subroutine get_limits(phi,phimin,phimax,phiave,dphi,phip,rmsphi,n)
+      implicit none
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer i,n,ntot,iglsum,n1,n2,nt
+      real phi(1),phip(1),phimin,phimax,phiave,dphi,rmsphi
+      real glmin,glmax,glsc2,glsum
+      logical ifm2
+
+      n1=lx1*ly1*lz1*nelv
+      n2=lx2*ly2*lz2*nelv
+
+      ifm2=.false.
+      ntot=lx1*ly1*lz1*nelgv
+      if(n.ne.n1) then
+        ifm2=.true.
+        ntot=lx2*ly2*lz2*nelgv
+      endif
+
+      rmsphi=0.0
+      dphi=0.0
+      if(istep.ge.1) then
+        do i=1,n
+          dphi=max(dphi,abs(phip(i)-phi(i)))
+          rmsphi=rmsphi+(phip(i)-phi(i))**2
+        enddo
+        rmsphi=glsum(rmsphi,1)
+        rmsphi=sqrt(rmsphi/real(ntot))/dt
+      endif
+      dphi=glmax(dphi,1)
+      dphi=dphi/dt
+
+      phimin=glmin(phi,n)
+      phimax=glmax(phi,n)
+
+      if(ifm2) then
+        phiave=glsc2(phi,bm2,n2)/volvm2
+      else
+        phiave=glsc2(phi,bm1,n1)/volvm1 
+      endif
+
+      return
+      end
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      subroutine get_limits_nodt(phi,phimin,phimax,phiave,n)
+      implicit none
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer n
+      real phi(1),phimin,phimax,phiave
+      real glmin,glmax,glsc2
+
+      phimin=glmin(phi,n)
+      phimax=glmax(phi,n)
+      phiave=glsc2(phi,bm1,n)/volvm1
 
       return
       end
