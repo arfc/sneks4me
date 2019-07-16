@@ -1,58 +1,66 @@
 #!/bin/bash
-# script to setup newrea.out cht mesh generation case from a gmsh .geo files
-# arg 1 = working directory
-# arg 2 = name of geo file (exclude .geo)
-# arg 3 = name of .msh output file (exclude.msh)
-# arg 4 = no. of processors for nekmpi run
+# script to setup newrea.out cht mesh generation case from gmsh .geo files
+# add SIZE, usr, rea, par template files in script directory in folder "chtsetup-files"
+# arg 1 = working directory - must contain a fluid and a solid folder
+# arg  = name of geo file (exclude .geo) ---> REMOVED - make fluid/solid
+# name of .msh output file (exclude.msh) = solid or fluid
+# arg 2 = no. of processors for nekmpi run
 src=$PWD
+cd $1
+solid=$1"/solid"
+fluid=$1"/fluid"
 # echo "$src"
 # exit 1
-cd $1
-gmsh $2".geo" -3 -order 2 -o $3".msh" -format msh22
-gmsh2nek << EOF
+for folder in $solid $fluid
+do
+    cd $folder
+    opname=$(basename "${folder}")
+    gmsh $opname".geo" -3 -order 2 -o $opname".msh" -format msh22
+    echo "$opname"
+    gmsh2nek << EOF
 3
-$3
-0
+$opname
+0 
 EOF
-head -c20 *re2
-
-if [ -e SIZE ] && [ -e $3.usr ] && [ -e $3.rea ]
-then
-    echo $'\nNek case files detected.Proceeding to nek operations.\n'
-    key='a'
-    while [ "$key" != '' ]; do
-    read -n1 -r -p "Press space to continue..." key
-    done
-else
-    echo $'\nNek case files not detected. Copying templates...\n'
-    cd $src/chtsetup-files || \
-     { echo 'file template dir does not exist, check script' ; exit 1; }
-    cp SIZE *usr *.rea $1/.
-    cd $1
-    mv *usr $3".usr"
-    mv *.rea $3".rea"
     head -c20 *re2
-    echo $'\nSetup sidesets in usr file from .geo file now.'
-    key='a'
-    while [ "$key" != '' ]; do
-    read -n1 -r -p "Press space to continue..." key
-    done
-fi
 
-genmap << EOF
-$3
+    if [ -e SIZE ] && [ -e $opname.usr ] && [ -e $opname.rea ]
+    then
+        echo $'\nNek case files detected.Proceeding to nek operations.\n'
+        key='a'
+        while [ "$key" != '' ]; do
+        read -n1 -r -p "Press space to continue..." key
+    done
+    else
+        echo $'\nNek case files not detected. Copying templates...\n'
+        cd $src/chtsetup-files || \
+         { echo 'file template dir does not exist, check script' ; exit 1; }
+        cp SIZE *usr *.rea $folder
+        cd $folder
+        mv *usr $opname".usr"
+        mv *.rea $opname".rea"
+        head -c20 *re2
+        echo $'\nSetup sidesets in usr file from .geo file now.'
+        key='a'
+        while [ "$key" != '' ]; do
+        read -n1 -r -p "Press space to continue..." key
+    done
+    fi
+
+    genmap << EOF
+$opname
 0.1
 EOF
-makenek $3
-nekmpi $3 $4
-touch $3"-prenek.rea"
-cd $src/chtsetup-files
-cat toprea >> $1/$3"-prenek.rea"
-cat $1/newrea.out >>  $1/$3"-prenek.rea"
-cat botrea >>  $1/$3"-prenek.rea"
-cd $1
-mkdir genfiles
-op=$3-"prenek.rea"
-shopt -s extglob
-mv !($op|*.geo|*.usr|SIZE|$3.re*|genfiles) genfiles/.
-echo "run prenek script to merge solid and fluid"
+    makenek $opname
+    nekmpi $opname $2
+    touch "new"$opname".rea"
+    cd $src/chtsetup-files
+    cat toprea >> $folder/"new"$opname".rea"
+    cat $folder/newrea.out >>  $folder/"new"$opname".rea"
+    cat botrea >>  $folder/"new"$opname".rea"
+    cd $folder
+    mkdir genfiles
+    op="new"$opname".rea"
+    shopt -s extglob
+    mv !($op|*.geo|*.usr|SIZE|$opname.re*|genfiles) genfiles/.
+    echo "run prenek script to merge solid and fluid"
