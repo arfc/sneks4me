@@ -1,4 +1,5 @@
 #!/bin/bash
+#shopt -s extglob
 # script to setup newrea.out cht mesh generation case from gmsh .geo files
 # add SIZE, usr, rea, par template files in script directory in folder "chtsetup-files"
 # arg 1 = working directory - must contain a fluid and a solid folder
@@ -14,6 +15,7 @@ fluid=$1"/fluid"
 for folder in $solid $fluid
 do
     cd $folder
+    echo "$folder"
     opname=$(basename "${folder}")
     gmsh $opname".geo" -3 -order 2 -o $opname".msh" -format msh22
     echo "$opname"
@@ -40,7 +42,7 @@ EOF
         mv *usr $opname".usr"
         mv *.rea $opname".rea"
         head -c20 *re2
-        echo $'\nSetup sidesets in usr file from .geo file now.'
+        echo $'\nSetup sidesets in usr file from .geo file, and SIZE file.'
         key='a'
         while [ "$key" != '' ]; do
         read -n1 -r -p "Press space to continue..." key
@@ -53,14 +55,16 @@ $opname
 EOF
     makenek $opname
     nekmpi $opname $2
-    touch "new"$opname".rea"
+    op="new"$opname".rea"
+    touch $op
     cd $src/chtsetup-files
-    cat toprea >> $folder/"new"$opname".rea"
-    cat $folder/newrea.out >>  $folder/"new"$opname".rea"
-    cat botrea >>  $folder/"new"$opname".rea"
+    cat toprea >> $folder/$op
+    cat $folder/newrea.out >>  $folder/$op
+    cat botrea >>  $folder/$op
     cd $folder
     mkdir genfiles
-    op="new"$opname".rea"
-    shopt -s extglob
-    mv !($op|*.geo|*.usr|SIZE|$opname.re*|genfiles) genfiles/.
+    mv !'(*.geo|*.usr|SIZE|*.re*|genfiles)' genfiles/.
     echo "run prenek script to merge solid and fluid"
+    mkdir ../prenek
+    cp $op ../prenek/
+done
