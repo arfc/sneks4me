@@ -31,8 +31,10 @@ EOF
         echo $'\nNek case files detected.Proceeding to nek operations.\n'
         key='a'
         while [ "$key" != '' ]; do
-        read -n1 -r -p "Press space to continue..." key
-    done
+	    echo "Press space to continue..." 
+#            read key
+            read -n1 key </dev/tty
+        done
     else
         echo $'\nNek case files not detected. Copying templates...\n'
         cd $src/chtsetup-files || \
@@ -45,8 +47,11 @@ EOF
         echo $'\nSetup sidesets in usr file from .geo file, and SIZE file.'
         key='a'
         while [ "$key" != '' ]; do
-        read -n1 -r -p "Press space to continue..." key
-    done
+	    echo "Press space to continue..." 
+#            read key
+	    read -n1 key </dev/tty
+
+        done
     fi
 
     genmap << EOF
@@ -54,6 +59,7 @@ $opname
 0.1
 EOF
     makenek $opname
+    echo "$opname"
     nekmpi $opname $2
     op="new"$opname".rea"
     touch $op
