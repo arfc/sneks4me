@@ -58,9 +58,9 @@ EOF
 $opname
 0.1
 EOF
-    makenek $opname
+    makenek $opname || exit 1
     echo "$opname"
-    nekmpi $opname $2
+    nekmpi $opname $2 || exit 1
     op="new"$opname".rea"
     touch $op
     cd $src/chtsetup-files
@@ -68,9 +68,9 @@ EOF
     cat $folder/newrea.out >>  $folder/$op
     cat botrea >>  $folder/$op
     cd $folder
-    mkdir genfiles
-    mv !'(*.geo|*.usr|SIZE|*.re*|genfiles)' genfiles/.
+#    mkdir genfiles
+#    mv !'(*.geo|*.usr|SIZE|*.re*|genfiles)' genfiles/.
     echo "run prenek script to merge solid and fluid"
-    mkdir ../prenek
+    [ ! -d "../prenek" ] && mkdir ../prenek
     cp $op ../prenek/
 done
