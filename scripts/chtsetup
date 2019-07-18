@@ -72,5 +72,18 @@ EOF
 #    mv !'(*.geo|*.usr|SIZE|*.re*|genfiles)' genfiles/.
     echo "run prenek script to merge solid and fluid"
     [ ! -d "../prenek" ] && mkdir ../prenek
-    cp $op ../prenek/
+    cp $op ../prenek/  
 done
+cd ../prenek
+prex << EOF
+chtrea
+3
+fluid
+solid
+EOF
+reatore2 << EOF
+chtrea
+cht
+EOF
+cp cht.re2 ../.
+echo "re2 generated in working directory."
