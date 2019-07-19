@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# <CASENAME> <NODES> <WALLTIME>
 echo  "#!/bin/bash"                                              > $1.batch
 
 echo  "#PBS -q normal"                                           >> $1.batch
@@ -16,7 +16,7 @@ echo  "#PBS -o $1.log.$2"                                       >> $1.batch
 
 echo  "#PBS -A bahg"                                             >> $1.batch
 
-echo  "#PBS -M achaube2@illinois.edu"                           >> $1.batch
+echo  "#PBS -m abe achaube2@illinois.edu"                           >> $1.batch
 
 echo  ". /opt/modules/default/etc/modules.sh"                   >> $1.batch
 
