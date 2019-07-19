@@ -162,7 +162,7 @@ c      implicit none
                   cbc(ifc,iel,1) = 'v  '
                   cbc(ifc,iel,2) = 'I  '
               elseif (id_face.eq.20) then   ! Outlet
-                  cbc(ifc,iel,1) = 'O  '
+                  cbc(ifc,iel,1) = 'W  '
                   cbc(ifc,iel,2) = 'I  ' 
               elseif (id_face.eq.30) then   ! SYM
                   cbc(ifc,iel,1) = 'SYM'
