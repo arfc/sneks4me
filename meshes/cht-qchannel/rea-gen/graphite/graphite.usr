@@ -159,7 +159,7 @@ c      implicit none
               bc(5,ifc,iel,2) = id_face
               bc(4,ifc,iel,2) = bc(5,ifc,iel,2)
               if (id_face.eq.10) then       ! Inlet
-                  cbc(ifc,iel,1) = 'v  '
+                  cbc(ifc,iel,1) = 'W  '
                   cbc(ifc,iel,2) = 'I  '
               elseif (id_face.eq.20) then   ! Outlet
                   cbc(ifc,iel,1) = 'W  '

@@ -1,0 +1,43 @@
+#!/bin/bash
+#shopt -s extglob
+# arg 1 - working dir
+# arg 2 - msh file name
+src=$PWD
+cd $1
+gmsh $2".geo" -3 -order 2 -o $2".msh" -format msh22
+gmsh2nek << EOF
+3
+$2
+0 
+EOF
+head -c20 *re2
+if [ -e SIZE ] && [ -e $2.usr ] && [ -e $2.rea ]
+then
+    echo $'\nNek case files detected.Proceeding to nek operations.\n'
+    key='a'
+    while [ "$key" != '' ]; do
+        echo "Press space to continue..." 
+#        read key
+        read -n1 key </dev/tty
+    done
+else
+    echo $'\nNek case files not detected. Copying templates...\n'
+    cd $src/chtsetup-files || \
+     { echo 'file template dir does not exist, check script' ; exit 1; }
+    cp SIZE *usr *.rea $1/.
+    cd $1
+    mv *usr $2".usr"
+    mv *.rea $2".rea"
+    head -c20 *re2
+    echo $'\nSetup sidesets in usr file from .geo file, and SIZE file.'
+    key='a'
+    while [ "$key" != '' ]; do
+        echo "Press space to continue..." 
+        read -n1 key </dev/tty
+    done
+fi
+genmap << EOF
+$2
+0.1
+EOF
+

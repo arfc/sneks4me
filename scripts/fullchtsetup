@@ -10,8 +10,6 @@ src=$PWD
 cd $1
 solid=$1"/solid"
 fluid=$1"/fluid"
-# echo "$src"
-# exit 1
 for folder in $solid $fluid
 do
     cd $folder

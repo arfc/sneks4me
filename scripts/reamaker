@@ -1,0 +1,12 @@
+#!/bin/bash
+#shopt -s extglob
+# arg 1 - working dir where newrea.out lives
+# arg 2 - output rea name
+src=$PWD
+cd $1
+op=$2".rea"
+touch $op
+cd $src/chtsetup-files
+cat toprea >> $1/$op
+cat $1/newrea.out >>  $1/$op
+cat botrea >>  $1/$op
