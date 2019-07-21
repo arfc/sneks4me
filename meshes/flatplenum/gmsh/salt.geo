@@ -155,5 +155,5 @@ Physical Surface("wall1",700) = {69,103,90} ;
 Physical Surface("wall2",800) = {11,12,13} ;
 Physical Surface("sym1",900) = {73,56} ;
 Physical Surface("sym2",1000) = {44,132,99} ;
-Physical Surface("int",1100) = {6,7,8,9,10} ;
+// Physical Surface("int",1100) = {6,7,8,9,10} ;
 Physical Volume("fluid",44) = {1,2,3,4,5,6,7,8,9,10,11,12,13};
