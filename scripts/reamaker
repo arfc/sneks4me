@@ -5,6 +5,7 @@
 src=$PWD
 cd $1
 op=$2".rea"
+rm $op
 touch $op
 cd $src/chtsetup-files
 cat toprea >> $1/$op
