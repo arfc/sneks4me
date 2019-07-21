@@ -1,0 +1,102 @@
+ NEKTON Version   2.6                                                                                                               
+ Choose a Name for This Session:
+  Beginning Session chttest                                                                                                         
+   1 READ PREVIOUS PARAMETERS 
+   2 TYPE IN  NEW  PARAMETERS 
+   3 CONJ. HEAT TRANSFER MERGE
+Choose item:
+ Enter name of fluid session
+ Will Read Mesh and B.C. data from  newfluid.rea     
+     Reading Element     206   [    1a]
+     Reading Element     412   [    1a]
+     Reading Element     618   [    1a]
+     Reading Element     824   [    1a]
+     Reading Element    1030   [    1a]
+     Reading Element    1236   [    1a]
+     Reading Element    1442   [    1a]
+     Reading Element    1648   [    1a]
+     Reading Element    1854   [    1a]
+     Reading Element    2060   [    1a]
+     Reading Element    2266   [    1a]
+     Reading Element    2472   [    1a]
+     Reading Element    2678   [    1a]
+     Reading Element    2884   [    1a]
+     Reading Element    3090   [    1a]
+     Reading Element    3296   [    1a]
+     Reading Element    3502   [    1a]
+     Reading Element    3708   [    1a]
+     Reading Element    3914   [    1a]
+     Reading Element    4120   [    1a]
+     Reading Element    4326   [    1a]
+     Reading Element    4532   [    1a]
+     Reading Element    4738   [    1a]
+     Reading Element    4944   [    1a]
+     Reading Element    5150   [    1a]
+     Reading Element    5356   [    1a]
+     Reading Element    5562   [    1a]
+     Reading Element    5768   [    1a]
+     Reading Element    5974   [    1a]
+     Reading Element    6180   [    1a]
+     Reading Element    6386   [    1a]
+     Reading Element    6592   [    1a]
+     Reading Element    6798   [    1a]
+     Reading Element    7004   [    1a]
+     Reading Element    7210   [    1a]
+     Reading Element    7416   [    1a]
+     Reading Element    7622   [    1a]
+     Reading Element    7828   [    1a]
+     Reading Element    8034   [    1a]
+     Reading Element    8240   [    1a]
+     Reading Element    8446   [    1a]
+     Reading Element    8652   [    1a]
+     Reading Element    8858   [    1a]
+     Reading Element    9064   [    1a]
+     Reading Element    9270   [    1a]
+     Reading Element    9476   [    1a]
+     Reading Element    9682   [    1a]
+     Reading Element    9888   [    1a]
+     Reading Element   10094   [    1a]
+     Reading Element   10300   [    1a]
+Showing only nelcap elements of        10348
+ Enter name of the solid session
+  *****    FLUID   BOUNDARY CONDITIONS *****
+  *****    THERMAL BOUNDARY CONDITIONS *****
+              *** MIDWAY BREAK MENU ***
+ABORT to write build data to file and exit
+SET B.C'S to continue
+   1 SET BCs                  
+   2 ABORT                    
+Choose item:
+                   *** BOUNDARY CONDITION MENU ***
+Begin Inputting Fluid Boundary Conditions
+   1 END  LEVEL               
+   2 MODIFY B.C.              
+   3 SHOW   B.C.              
+   4 INTERNAL B.C.            
+   5 ZOOM                     
+Choose item:
+Input with mouse 2 points on edge of new frame.
+Menu area for keybd input.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
+menu area to abort and restore to original size.
+Click in menu area for keybd or re-enter pts.
+Click 2nd point on edge of new frame, or in
