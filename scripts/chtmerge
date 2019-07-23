@@ -8,4 +8,9 @@ chtrea
 3
 $2
 $3
-<<
+EOF
+rm *jou fort.* session* *dra
+reatore2 << EOF
+chtrea
+cht
+EOF
