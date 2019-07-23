@@ -1,0 +1,10 @@
+#!/bin/bash
+#shopt -s extglob
+src=$PWD
+cd $1
+gmsh $2".geo" -3 -order 2 -o $2".msh" -format msh22
+gmsh2nek << EOF
+3
+$2
+0 
+EOF
