@@ -188,9 +188,9 @@ c      implicit none
      	      elseif (id_face.eq.1000) then   ! sym plane2
                   cbc(ifc,iel,1) = 'SYM'
                   cbc(ifc,iel,2) = 'SYM'
-c     	      elseif (id_face.eq.1100) then   ! sym plane2
-c                  cbc(ifc,iel,1) = 'E  '
-c                  cbc(ifc,iel,2) = 'E  '
+c    	      else
+c                 cbc(ifc,iel,1) = 'E  '
+c                 cbc(ifc,iel,2) = 'E  '
               endif
           enddo
       enddo

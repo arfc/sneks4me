@@ -51,7 +51,7 @@ Recombine Surface {1,2,3};
 Transfinite Curve{5,6} = 7;
 Transfinite Curve{7,8} = 3;
 Transfinite Curve{9,10} = 7;
-Transfinite Curve{1,2,3,4} = 4;
+Transfinite Curve{1,2,3,4} = 7;
 
 Extrude {0,0,h}{
         Surface{1,2,3};
