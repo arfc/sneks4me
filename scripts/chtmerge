@@ -1,0 +1,11 @@
+# arg 1 working dir
+# arg 2 fluid domain rea
+# arg 3 solid domain rea
+
+cd $1
+pretex << EOF
+chtrea
+3
+$2
+$3
+<<
