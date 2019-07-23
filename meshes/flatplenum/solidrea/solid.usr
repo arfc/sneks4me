@@ -159,11 +159,11 @@ c      implicit none
               bc(5,ifc,iel,2) = id_face
               bc(4,ifc,iel,2) = bc(5,ifc,iel,2)
               if (id_face.eq.10) then       ! Inlet
-                  cbc(ifc,iel,1) = 'W  '
-                  cbc(ifc,iel,2) = 'I  '
+                  cbc(ifc,iel,1) = 'v  '
+                  cbc(ifc,iel,2) = 't  '
               elseif (id_face.eq.20) then   ! Outlet
-                  cbc(ifc,iel,1) = 'W  '
-                  cbc(ifc,iel,2) = 'E  ' 
+                  cbc(ifc,iel,1) = 'v  '
+                  cbc(ifc,iel,2) = 't  ' 
               elseif (id_face.eq.30) then   ! Sym plane 1
                   cbc(ifc,iel,1) = 'SYM'
                   cbc(ifc,iel,2) = 'SYM'
@@ -171,8 +171,8 @@ c      implicit none
                   cbc(ifc,iel,1) = 'SYM'
                   cbc(ifc,iel,2) = 'SYM'
       	      elseif (id_face.eq.50) then   ! Inner wall
-                  cbc(ifc,iel,1) = 'W  '
-                  cbc(ifc,iel,2) = 'E  '
+                  cbc(ifc,iel,1) = 'v  '
+                  cbc(ifc,iel,2) = 't  '
       	      elseif (id_face.eq.60) then   ! Outer wall
                   cbc(ifc,iel,1) = 'W  '
                   cbc(ifc,iel,2) = 'I  '
