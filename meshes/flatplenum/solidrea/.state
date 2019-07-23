@@ -1,4 +1,4 @@
-NEK_SOURCE_ROOT=/home/achaube/Nek5000
+NEK_SOURCE_ROOT=/Users/achubbz/Nek5000
 FC=mpif77
 FFLAGS=
 FCPP=-cpp
