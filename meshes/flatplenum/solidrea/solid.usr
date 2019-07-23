@@ -163,7 +163,7 @@ c      implicit none
                   cbc(ifc,iel,2) = 'I  '
               elseif (id_face.eq.20) then   ! Outlet
                   cbc(ifc,iel,1) = 'W  '
-                  cbc(ifc,iel,2) = 'I  ' 
+                  cbc(ifc,iel,2) = 'E  ' 
               elseif (id_face.eq.30) then   ! Sym plane 1
                   cbc(ifc,iel,1) = 'SYM'
                   cbc(ifc,iel,2) = 'SYM'
