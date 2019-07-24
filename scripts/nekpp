@@ -1,3 +1,6 @@
+# arg 1 - working dir
+# arg 2 - case name
+# arg 3 - nekmpi nproc
 src=$PWD
 cd $1
 if [ -e SIZE ] && [ -e $2.usr ] && [ -e $2.rea ]
