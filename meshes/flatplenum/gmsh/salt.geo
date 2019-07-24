@@ -57,9 +57,9 @@ Plane Surface(5) = {5};
 Transfinite Surface {1,2,3,4,5};
 Recombine Surface {1,2,3,4,5};
 
-Transfinite Curve{4,2,13,12} =7;
+Transfinite Curve{4,2,13,12} =8;
 Transfinite Curve{7,-5,-9,-11} = 8 Using Progression 1.3;
-Transfinite Curve{1,3,6} = 7;
+Transfinite Curve{1,3,6} = 11;
 Transfinite Curve{14,8,10} = 3;
 
 //plenum begins here
@@ -127,11 +127,11 @@ Plane Surface(13) = {13};
 Transfinite Surface {6,7,8,9,10,11,12,13};
 Recombine Surface {6,7,8,9,10,11,12,13};
 
-Transfinite Curve{18,16,23,27,30} =7;
+Transfinite Curve{18,16,23,27,30} =8;
 Transfinite Curve{21,-19,-25,-28} = 8 Using Progression 1.3;
-Transfinite Curve{15,17,20,32} = 7;
+Transfinite Curve{15,17,20,32} = 11;
 Transfinite Curve{22,24,26,31} = 3;
-Transfinite Curve{33,34,35,29} = 11; //only set that's conformity independent
+Transfinite Curve{33,-34,-35,-29} = 8 Using Progression 1.2; //only set that's conformity independent
 
 Extrude {0,0,h}{
         Surface {1,2,3,4,5};
