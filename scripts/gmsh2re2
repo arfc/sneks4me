@@ -1,5 +1,7 @@
 #!/bin/bash
 #shopt -s extglob
+# ARG 1 - working dir
+# ARG 2 - .geo file name, w/o extension
 src=$PWD
 cd $1
 gmsh $2".geo" -3 -order 2 -o $2".msh" -format msh22

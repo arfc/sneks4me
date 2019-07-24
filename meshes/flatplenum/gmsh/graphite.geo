@@ -48,10 +48,10 @@ Plane Surface(3) = {3};
 Transfinite Surface {1,2,3};
 Recombine Surface {1,2,3};
 
-Transfinite Curve{5,6} = 7;
+Transfinite Curve{5,6} = 11;
 Transfinite Curve{7,8} = 3;
-Transfinite Curve{9,10} = 7;
-Transfinite Curve{1,2,3,4} = 11;
+Transfinite Curve{9,10} = 8;
+Transfinite Curve{1,2,3,4} = 8 Using Progression 1.2;
 
 Extrude {0,0,h}{
         Surface{1,2,3};
@@ -65,4 +65,4 @@ Physical Surface("sym1",30) = {19} ;
 Physical Surface("sym2",40) = {75} ; 
 Physical Surface("wall",50) = {23,49,71} ;
 Physical Surface("ext1",60) = {31,41,63} ;
-Physical Volume("solid",44) = {1,2,3} ;
+Physical Volume("solid",1) = {1,2,3} ;
