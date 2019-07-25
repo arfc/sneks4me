@@ -6,9 +6,9 @@ mx = 0.46;
 my = Sqrt(r^2 - ((mx-bx)^2));
 cy = 0.193649;
 h =63; //channel height in inches
-n = 126; //no. of vertical layers 
+n = 63; //no. of vertical layers 
 hp = 10; //plenum height
-np = 20; //plenum vertical layers
+np = 10; //plenum vertical layers
 gl = 0.8; //graphite length, from graphite mesh
 gw = 0.4; //graphite width, from graphite mesh
 
@@ -131,7 +131,7 @@ Transfinite Curve{18,16,23,27,30} =8;
 Transfinite Curve{21,-19,-25,-28} = 8 Using Progression 1.3;
 Transfinite Curve{15,17,20,32} = 11;
 Transfinite Curve{22,24,26,31} = 3;
-Transfinite Curve{33,-34,-35,-29} = 8 Using Progression 1.2; //only set that's conformity independent
+Transfinite Curve{-33,34,35,29} = 11 Using Progression 1.3; //only set that's conformity independent
 
 Extrude {0,0,h}{
         Surface {1,2,3,4,5};

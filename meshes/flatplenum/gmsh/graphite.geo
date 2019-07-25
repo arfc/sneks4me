@@ -8,7 +8,7 @@ cx = (1.6*l);
 by = r+dl;
 L = l+r;
 h = 63; //channel height, inches
-n = 126; // no. of vertical layers
+n = 63; // no. of vertical layers
 
 //Point(0) = {0,0,0};
 Point(1) = {l,0,0};
@@ -51,7 +51,7 @@ Recombine Surface {1,2,3};
 Transfinite Curve{5,6} = 11;
 Transfinite Curve{7,8} = 3;
 Transfinite Curve{9,10} = 8;
-Transfinite Curve{1,2,3,4} = 8 Using Progression 1.2;
+Transfinite Curve{-1,-2,-3,-4} = 11 Using Progression 1.3;
 
 Extrude {0,0,h}{
         Surface{1,2,3};
