@@ -111,7 +111,7 @@ c      implicit none
       ux   = 0.0
       uy   = 0.0
       uz   = 1.0
-      
+      if (eg.gt.nelgv) uz = 0.0
       temp = 0.0
       if (eg.gt.nelgv) temp = 0.00002951784664 ! glob el id > no. of el in glob v mesh
 
