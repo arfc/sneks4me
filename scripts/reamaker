@@ -2,6 +2,8 @@
 #shopt -s extglob
 # arg 1 - working dir where newrea.out lives
 # arg 2 - output rea name
+# script needs toprea and botrea files in folder "chtsetup-files" - basically 
+# top and bottom of any 3D rea file from examples
 src=$PWD
 cd $1
 op=$2".rea"

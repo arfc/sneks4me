@@ -3,8 +3,6 @@
 # script to setup newrea.out cht mesh generation case from gmsh .geo files
 # add SIZE, usr, rea, par template files in script directory in folder "chtsetup-files"
 # arg 1 = working directory - must contain a fluid and a solid folder
-# arg  = name of geo file (exclude .geo) ---> REMOVED - make fluid/solid
-# name of .msh output file (exclude.msh) = solid or fluid
 # arg 2 = no. of processors for nekmpi run
 src=$PWD
 cd $1
