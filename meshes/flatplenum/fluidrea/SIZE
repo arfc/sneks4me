@@ -14,9 +14,9 @@ c
       parameter (lxd=9)               ! GL  points for over-integration (dealiasing) 
       parameter (lx2=lx1-0)            ! GLL points for pressure (lx1 or lx1-2)
                                      
-      parameter (lelg=17500)          ! max total number of elements
+      parameter (lelg=39552)          ! max total number of elements
       parameter (lpmin=4)              ! min MPI ranks
-      parameter (lpmax=1024)           ! max MPI ranks
+      parameter (lpmax=8)           ! max MPI ranks
       parameter (ldimt=1)              ! max auxiliary fields (temperature + scalars)
 
       ! OPTIONAL
@@ -33,7 +33,7 @@ c
       parameter (lfdm=0)               ! set to 1 for fast diagonalization method
       parameter (lelx=1,lely=1,lelz=1) ! global tensor mesh dimensions
 
-      parameter (lelt=lelg/lpmin + 3)  ! max number of local elements per MPI rank
+      parameter (lelt=lelg/lpmin + 4)  ! max number of local elements per MPI rank
       parameter (lbelt=1)              ! set to lelt for mhd
       parameter (lpelt=1)              ! set to lelt for linear stability
       parameter (lcvelt=lelt)          ! set to lelt for cvode
