@@ -6,9 +6,9 @@ mx = 0.46;
 my = Sqrt(r^2 - ((mx-bx)^2));
 cy = 0.193649;
 h =63; //channel height in inches
-n = 63; //no. of vertical layers 
+n = 126; //no. of vertical layers 
 hp = 10; //plenum height
-np = 10; //plenum vertical layers
+np = 30; //plenum vertical layers
 gl = 0.8; //graphite length, from graphite mesh
 gw = 0.4; //graphite width, from graphite mesh
 
