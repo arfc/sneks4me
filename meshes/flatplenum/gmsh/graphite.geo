@@ -8,7 +8,7 @@ cx = (1.6*l);
 by = r+dl;
 L = l+r;
 h = 63; //channel height, inches
-n = 126; // no. of vertical layers
+n = 252; // no. of vertical layers
 
 //Point(0) = {0,0,0};
 Point(1) = {l,0,0};
