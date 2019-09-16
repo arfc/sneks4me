@@ -37,7 +37,7 @@ echo  sleep 5                                                   >> $1.sh
 core=$((16*$2))
 
 # echo  aprun -n $core -N 64 "./nek5000"                          >> $1.sh
-echo runjob --np $core -p 16 --block $COBALT_PARTNAME : nek5000  >> $1.sh
+echo runjob --np $core -p 16 --block '$COBALT_PARTNAME' : './nek5000'  >> $1.sh
 
 echo  sleep 5                                                   >> $1.sh
 
