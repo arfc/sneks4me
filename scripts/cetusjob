@@ -1,8 +1,8 @@
 #!/bin/bash
-# <CASENAME> <NODES> <WALLTIME>
+# <CASENAME> <NODES> <RANKS PER NODE>  <WALLTIME>
 echo  "#!/bin/bash"                                              > $1.sh
 
-echo  "#COBALT -n $2 -t $3 -q default -A PANDAVal"             >> $1.sh
+echo  "#COBALT -n $2 -t $4 -q default -A PANDAVal"             >> $1.sh
 
 echo  "#COBALT --mode script"                              >> $1.sh
 
@@ -34,10 +34,10 @@ echo  rm -f ioinfo                                              >> $1.sh
 
 echo  sleep 5                                                   >> $1.sh
 
-core=$((16*$2))
+core=$(($3*$2))
 
 # echo  aprun -n $core -N 64 "./nek5000"                          >> $1.sh
-echo runjob --np $core -p 16 --block '$COBALT_PARTNAME' : './nek5000'  >> $1.sh
+echo runjob --np $core -p $3 --block '$COBALT_PARTNAME' : './nek5000'  >> $1.sh
 
 echo  sleep 5                                                   >> $1.sh
 
