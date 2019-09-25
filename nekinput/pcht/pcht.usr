@@ -69,7 +69,11 @@ c      implicit none
       integer e
 c     e = gllel(eg)
 
-      qvol = 1.0
+      eps = 0.05
+      p0 = 31000000.0
+      H = 73.0
+      pi = 22.0/7.0
+      qvol = p0 * sin(pi*(z+eps)/(H+(2*eps)))
       if (eg.gt.nelgv) qvol = 0.0 ! glob el id > no. of el in glob v mesh
  
       return
