@@ -1,9 +1,25 @@
 # script to rename nek output files
 # run ./rename <arg>, where <arg> is the increment in the last
 # two digits of the files
-for i in *.f000* ; do
-  n=$(($((10#${i: -3}))+$1))
-  o=${i:0:-3}
-  new="${o}${n}"
-  mv "$i" "$new"
+mkdir output
+for i in *.f* ; do
+  inc=$1
+  NUM=$(echo $i | tr -dc '0-9')
+  NUM=$(echo $NUM+$inc | bc)
+  str="$NUM"
+  o=${i:0:-5}
+  new="${o}${str}"
+  cp "$i" output/.
+  mv output/$i output/$new
+done
+cd output
+for i in *.f* ; do
+  NUM=$(echo $i | tr -dc '0-9')
+  str="$NUM"
+  o=${i:0:-3} 
+  while [ ${#str} -lt 5 ]; do
+      str="0"$str
+  done
+  new="${o}${str}"
+  mv $i $new
 done
