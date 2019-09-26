@@ -1,25 +1,32 @@
+#!/bin/bash
 # script to rename nek output files
-# run ./rename <arg>, where <arg> is the increment in the last
-# two digits of the files
-mkdir output
-for i in *.f* ; do
+# run ./rename <arg>, where <arg> is the increment in the
+# file numbers
+files=$PWD/*.f*
+for i in *.f*; 
+do
   inc=$1
   NUM=$(echo $i | tr -dc '0-9')
-  NUM=$(echo $NUM+$inc | bc)
+  NUM=$(echo "$NUM+$inc" | bc)
   str="$NUM"
-  o=${i:0:-5}
-  new="${o}${str}"
-  cp "$i" output/.
-  mv output/$i output/$new
+  fname="${i%.*}"
+  new="${fname}.f${str}"
+  mv $i $new
 done
-cd output
+
 for i in *.f* ; do
-  NUM=$(echo $i | tr -dc '0-9')
+  fname="${i%.*}"
+  NUM=$(echo "$i" | tr -dc '0-9')
+  NUM=$(echo "$NUM+0" | bc)
   str="$NUM"
-  o=${i:0:-3} 
+  # echo "STR:$str"
+  old="${fname}.f${str}"
   while [ ${#str} -lt 5 ]; do
       str="0"$str
   done
-  new="${o}${str}"
-  mv $i $new
+  # echo "NEWSTR:$str"
+  new2="${fname}.f${str}"
+  # echo "OLD:$old"
+  # echo "NEW:$new2"
+  mv $old $new2
 done
