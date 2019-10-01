@@ -122,6 +122,7 @@ c      implicit none
       return
       end
 c-----------------------------------------------------------------------
+
       subroutine userchk()
 
 c      implicit none
@@ -129,7 +130,7 @@ c      implicit none
       include 'SIZE'
       include 'TOTAL'
 
-      lt = lx1*ly1*lz1*lelt
+      parameter(lt=lx1*ly1*lz1*lelt)
       common /myoutflow/ d(lt),w1(lt)      
       ratio = 1.5
       uin = 0
