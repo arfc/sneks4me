@@ -1,5 +1,6 @@
 #!/bin/bash
 #shopt -s extglob
+# script converts geo to re2, sets up case files
 # arg 1 - working dir
 # arg 2 - geo file name
 src=$PWD
