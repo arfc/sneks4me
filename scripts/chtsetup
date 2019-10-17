@@ -39,6 +39,6 @@ else
 fi
 genmap << EOF
 $2
-0.1
+0.01
 EOF
 
