@@ -1,0 +1,319 @@
+c-----------------------------------------------------------------------
+c  nek5000 user-file template
+c
+c  user specified routines:
+c     - uservp  : variable properties
+c     - userf   : local acceleration term for fluid
+c     - userq   : local source term for scalars
+c     - userbc  : boundary conditions
+c     - useric  : initial conditions
+c     - userchk : general purpose routine for checking errors etc.
+c     - userqtl : thermal divergence for lowMach number flows 
+c     - usrdat  : modify element vertices 
+c     - usrdat2 : modify mesh coordinates
+c     - usrdat3 : general purpose routine for initialization
+c     
+c-----------------------------------------------------------------------
+      subroutine uservp(ix,iy,iz,eg) ! set variable properties
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+     
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+c     e = gllel(eg)
+
+      udiff  = 0.0
+      utrans = 0.0
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userf(ix,iy,iz,eg) ! set acceleration term
+c
+c     Note: this is an acceleration term, NOT a force!
+c     Thus, ffx will subsequently be multiplied by rho(x,t).
+c
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+c     e = gllel(eg)
+
+      ffx = 0.0
+      ffy = 0.0
+      ffz = 0.0
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userq(ix,iy,iz,eg) ! set source term
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+c     e = gllel(eg)
+
+      qvol = 0
+ 
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userbc(ix,iy,iz,iside,eg) ! set up boundary conditions
+c
+c     NOTE ::: This subroutine MAY NOT be called by every process
+c
+c      implicit none
+
+      integer ix,iy,iz,iside,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+
+      ux   = 0.0
+      uy   = 0.0
+      uz   = 1.0
+      temp = 0.0
+
+      e = gllel(eg)
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine useric(ix,iy,iz,eg) ! set up initial conditions
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      ux   = 0.0
+      uy   = 0.0
+      uz   = 1.0
+      if (eg.gt.nelgv) uz = 0.0
+      temp = 0.0
+      if (eg.gt.nelgv) temp = 0.00002951784664 ! glob el id > no. of el in glob v mesh
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userchk()
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      parameter(lt=lx1*ly1*lz1*lelt)
+      common /myoutflow/ d(lt),w1(lt)      
+      ratio = 1.5
+      uin = 1.0
+
+      call turb_outflow(d,w1,ratio,uin)
+
+c      if( time.ge.20) iostep = 1000   
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userqtl ! Set thermal divergence
+
+      call userqtl_scig 
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat()   ! This routine to modify element vertices
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat2()  ! This routine to modify mesh coordinates
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      ntot = nx1*ny1*nz1*nelt
+
+
+c      param(54) = 3
+c      param(55) = 1
+      dh=0.6241
+c xm1 - x mesh
+c scale x mesh by hyd dia in mesh units (in)
+c      call cmult(xm1,1./dh,ntot)    
+c      call cmult(ym1,1./dh,ntot)
+c      call cmult(zm1,1./dh,ntot)
+      
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat3()
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine print_limits
+      implicit none
+      include 'SIZE'
+      include 'TOTAL'
+
+      real vol,glsum,glmin,glmax,glsc2
+      real tmp(lx1*ly1*lz1*lelv)
+      integer i,n1,n2,nt,nf
+
+C     Primitive Variables
+      real uxmin,uxmax,uxave,uymin,uymax,uyave,uzmin,uzmax,uzave
+      real prmin,prmax,prave
+      real thmin(ldimt),thmax(ldimt),thave(ldimt)
+      real rmsux,rmsuy,rmsuz,rmspr,rmsth(ldimt),glrms
+      real dux,duy,duz,dpr,dth(ldimt)
+      character*15 tname
+
+      n1=lx1*ly1*lz1*nelv
+      n2=lx2*ly2*lz2*nelv
+      nt=lx1*ly1*lz1*nelt
+
+      if(ifflow) then
+        call get_limits(vx,uxmin,uxmax,uxave,dux,vxlag,rmsux,n1)
+        call get_limits(vy,uymin,uymax,uyave,duy,vylag,rmsuy,n1)
+       if(if3d) call get_limits(vz,uzmin,uzmax,uzave,duz,vzlag,rmsuz,n1)
+        call get_limits(pr,prmin,prmax,prave,dpr,prlag,rmspr,n2)
+      endif
+      if(ifheat) then
+        do i=1,npscal+1
+          nf=n1
+          if(iftmsh(i+1))nf=nt
+          if(idpss(i).eq.0) call get_limits(t(1,1,1,1,i),thmin(i) !Helmholtz solver
+     &          ,thmax(i),thave(i),dth(i),tlag(1,1,1,1,1,i),rmsth(i),nf)
+          if(idpss(i).eq.1) call get_limits_nodt(t(1,1,1,1,i) !CVODE solver
+     &                                   ,thmin(i),thmax(i),thave(i),nf)
+        enddo
+      endif
+
+      if(nio.eq.0) then
+        write(*,*)
+        write(*,254) 'limits','min','max','ave','max d/dt','rms d/dt'
+        if(ifflow) then
+          write(*,255) 'u velocity',uxmin,uxmax,uxave,dux,rmsux
+          write(*,255) 'v velocity',uymin,uymax,uyave,duy,rmsuy
+          if(if3d) write(*,255) 'w velocity',uzmin,uzmax,uzave,duz,rmsuz
+          write(*,255) 'pressure',prmin,prmax,prave,dpr,rmspr
+        endif
+        if(ifheat) then
+          do i=1,npscal+1
+            if(i.eq.1) write(tname,'(a15)') "temperature"
+            if(i.gt.1) write(tname,'(a14,i1)') "PS ",i-1
+            if(idpss(i).eq.0)write(*,255)
+     &               tname,thmin(i),thmax(i),thave(i),dth(i),rmsth(i)
+            if(idpss(i).eq.1)write(*,256)
+     &               tname,thmin(i),thmax(i),thave(i),'--','--'
+          enddo
+        endif
+        write(*,*)
+      endif
+
+c     call copy(prlag,pr,n2)  no longer necessary as of commit 6616c87a0f9ecd946701dc7e43b997350a2a57b9
+
+ 254  format(a15,5a13)
+ 255  format(a15,5es13.4)
+ 256  format(a15,3es13.4,2a13)
+
+      return
+      end
+c-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      subroutine get_limits(phi,phimin,phimax,phiave,dphi,phip,rmsphi,n)
+      implicit none
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer i,n,ntot,iglsum,n1,n2,nt
+      real phi(1),phip(1),phimin,phimax,phiave,dphi,rmsphi
+      real glmin,glmax,glsc2,glsum
+      logical ifm2
+
+      n1=lx1*ly1*lz1*nelv
+      n2=lx2*ly2*lz2*nelv
+
+      ifm2=.false.
+      ntot=lx1*ly1*lz1*nelgv
+      if(n.ne.n1) then
+        ifm2=.true.
+        ntot=lx2*ly2*lz2*nelgv
+      endif
+
+      rmsphi=0.0
+      dphi=0.0
+      if(istep.ge.1) then
+        do i=1,n
+          dphi=max(dphi,abs(phip(i)-phi(i)))
+          rmsphi=rmsphi+(phip(i)-phi(i))**2
+        enddo
+        rmsphi=glsum(rmsphi,1)
+        rmsphi=sqrt(rmsphi/real(ntot))/dt
+      endif
+      dphi=glmax(dphi,1)
+      dphi=dphi/dt
+
+      phimin=glmin(phi,n)
+      phimax=glmax(phi,n)
+
+      if(ifm2) then
+        phiave=glsc2(phi,bm2,n2)/volvm2
+      else
+        phiave=glsc2(phi,bm1,n1)/volvm1 
+      endif
+
+      return
+      end
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      subroutine get_limits_nodt(phi,phimin,phimax,phiave,n)
+      implicit none
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer n
+      real phi(1),phimin,phimax,phiave
+      real glmin,glmax,glsc2
+
+      phimin=glmin(phi,n)
+      phimax=glmax(phi,n)
+      phiave=glsc2(phi,bm1,n)/volvm1
+
+      return
+      end
+c-----------------------------------------------------------------------
