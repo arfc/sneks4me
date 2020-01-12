@@ -327,8 +327,6 @@ Extrude {0,0,h+hinc}{
         Recombine;
 }
 //+
-//Physical Surface("top") = {109, 131, 153, 175, 197, 219, 241, 263, 285, 307, 329, 351, 373, 395, 417, 439, 461, 483, 505, 527, 549, 571, 593, 615, 637, 659, 681, 703, 725, 747, 769, 791, 813, 835, 857, 879};
-//+
 Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
   Duplicata { Volume{36}; Volume{34}; Volume{35}; Volume{32}; Volume{33}; Volume{25}; Volume{26}; Volume{27}; Volume{4}; Volume{21}; Volume{3}; Volume{22}; Volume{23}; Volume{24}; Volume{1}; Volume{2}; Volume{20}; Volume{5}; Volume{6}; Volume{19}; Volume{18}; Volume{7}; Volume{28}; Volume{29}; Volume{31}; Volume{8}; Volume{17}; Volume{30}; Volume{9}; Volume{16}; Volume{10}; Volume{15}; Volume{11}; Volume{14}; Volume{13}; Volume{12}; }
 }
@@ -340,3 +338,21 @@ Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
 Rotate {{0, 0, 1}, {0, 0, 0}, Pi/2} {
   Duplicata { Volume{2426}; Volume{2457}; Volume{2488}; Volume{2519}; Volume{2581}; Volume{2612}; Volume{2643}; Volume{2674}; Volume{2705}; Volume{2736}; Volume{2767}; Volume{2550}; Volume{2798}; Volume{2953}; Volume{2984}; Volume{2829}; Volume{2922}; Volume{3015}; Volume{3077}; Volume{3046}; Volume{2891}; Volume{2860}; Volume{2240}; Volume{2271}; Volume{2333}; Volume{2395}; Volume{2364}; Volume{2302}; Volume{2209}; Volume{2178}; Volume{2147}; Volume{2116}; Volume{2085}; Volume{2054}; Volume{1992}; Volume{2023}; }
 }
+// SIDE SETS
+
+//+
+Physical Surface("top1") = {615, 109, 131, 593, 571, 153, 549, 175, 527, 197, 505, 219, 681, 659, 637, 813, 835, 879, 791, 857, 769, 703, 241, 483, 461, 263, 725, 747, 285, 439, 307, 329, 351, 373, 395, 417};
+//+
+Physical Surface("top2") = {1320, 1351, 1196, 1134, 1041, 1010, 917, 886, 948, 1630, 1723, 1754, 1816, 1878, 1971, 1940, 1909, 1847, 1785, 1661, 1692, 1506, 1444, 1475, 1382, 1413, 1165, 1227, 1258, 1289, 1072, 1103, 1568, 1599, 979};
+//+
+Physical Surface("top3") = {2432, 2401, 2370, 2308, 2215, 2153, 2060, 1998, 2463, 2494, 2525, 2587, 2618, 2649, 2680, 2711, 2742, 2773, 2556, 2959, 2804, 2990, 3083, 3021, 2928, 2835, 2866, 2897, 3052, 2339, 2277, 2246, 2184, 2122, 2091, 2029};
+//+
+Physical Surface("top4") = {3276, 3245, 3214, 3183, 3152, 3121, 3090, 3865, 3896, 3927, 3958, 4020, 4113, 4144, 4175, 4082, 4051, 3989, 3803, 3772, 3834, 3679, 3710, 3741, 3555, 3586, 3617, 3648, 3493, 3462, 3524, 3431, 3400, 3369, 3338, 3307};
+//+
+Physical Surface("outside1") = {4164, 4195, 3296, 3327};
+//+
+Physical Surface("outside2") = {2018, 2049, 2669, 2700};
+//+
+Physical Surface("outside3") = {1991, 1960, 1340, 1309};
+//+
+Physical Surface("outside4") = {350, 372, 108, 614, 1960};
