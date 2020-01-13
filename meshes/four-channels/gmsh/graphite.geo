@@ -305,21 +305,6 @@ Plane Surface(36) = {36};
 Transfinite Surface {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
 Recombine Surface {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
 //+
-Transfinite Curve {10, 14, 18} = 2;
-Transfinite Curve {11, 15, 19} = 2;
-Transfinite Curve {12, 16, 20} = 2;
-Transfinite Curve {13, 17, 75, 80, 46, 43, 41} = 2;
-Transfinite Curve {62, 59, 71, 79, 81} = 2;
-Transfinite Curve {63, 56, 58, 52, 50, 48} = 2;
-Transfinite Curve {64, 60, 69, 53, 45, 47} = 2;
-Transfinite Curve {65, 61, 76, 83, 85} = 2;
-Transfinite Curve {33, 37, 78, 84, 49, 42, 44} = 2;
-Transfinite Curve {32, 36, 40} = 2;
-Transfinite Curve {31, 35, 39} = 2;
-Transfinite Curve {30, 34, 38} = 2;
-Transfinite Curve {2, 4, 6, 8, 9, 66, 67, 68, 29, 27, 25, 23, 21} = 2;
-Transfinite Curve {1, 3, 5, 7, 72, 57, 55, 70, 77, 28, 26, 24, 22} = 2;
-Transfinite Curve {51, 82, 73, 54, 74, 87, 86} = 2;
 
 Extrude {0,0,h+hinc}{
         Surface{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
