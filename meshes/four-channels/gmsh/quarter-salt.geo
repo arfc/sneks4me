@@ -24,6 +24,7 @@ y9 = Sqrt((0.3^2)-(x9-l1+l2+r)^2)-l1;
 h = 1; //z coordinate at which plenum begins, inches
 n = 10; // no. of layers in plenum
 hinc = 7; //plenum height, inches
+hc = -62; //z coordinate at which channel begins
 
 Point(0) = {0,0,h};
 Point(1) = {-l1,-l1,h};
@@ -134,8 +135,6 @@ Point(42) = {-0.2, -0.6,h};
 Point(43) = {-0.4, -0.6,h};
 Point(44) = {0.2, -0.6,h};
 Point(45) = {0.3, -0.5,h};
-Point(46) = {-0.7, -1,h};
-Point(47) = {0.7, -1,h};
 Point(48) = {-0.2, -0.7,h};
 Point(49) = {0, -0.7,h};
 Point(50) = {0.2, -0.7,h};
@@ -182,17 +181,6 @@ Line(84) = {45, 39};
 Line(85) = {39, 25};
 Line(86) = {39, 14};
 Line(87) = {45, 54};
-/*
-
-Physical Surface("inlet",10) = {1,2,3} ;
-Physical Surface("outlet",20) = {32,54,76} ;
-Physical Surface("sym1",30) = {19} ; 
-Physical Surface("sym2",40) = {75} ; 
-Physical Surface("wall",50) = {23,49,71} ;
-Physical Surface("ext1",60) = {31,41,63} ;
-Physical Volume("solid",1) = {1,2,3} ;
-*/
-
 
 Curve Loop(1) = {18, 3, -14, -1};
 Plane Surface(1) = {1};
@@ -304,27 +292,31 @@ Plane Surface(36) = {36};
 
 Transfinite Surface {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
 Recombine Surface {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
-//+
-Transfinite Curve {10, 14, 18} = 2;
-Transfinite Curve {11, 15, 19} = 2;
-Transfinite Curve {12, 16, 20} = 2;
-Transfinite Curve {13, 17, 75, 80, 46, 43, 41} = 2;
-Transfinite Curve {62, 59, 71, 79, 81} = 2;
-Transfinite Curve {63, 56, 58, 52, 50, 48} = 2;
-Transfinite Curve {64, 60, 69, 53, 45, 47} = 2;
-Transfinite Curve {65, 61, 76, 83, 85} = 2;
-Transfinite Curve {33, 37, 78, 84, 49, 42, 44} = 2;
-Transfinite Curve {32, 36, 40} = 2;
-Transfinite Curve {31, 35, 39} = 2;
-Transfinite Curve {30, 34, 38} = 2;
-Transfinite Curve {2, 4, 6, 8, 9, 66, 67, 68, 29, 27, 25, 23, 21} = 2;
-Transfinite Curve {1, 3, 5, 7, 72, 57, 55, 70, 77, 28, 26, 24, 22} = 2;
-Transfinite Curve {51, 82, 73, 54, 74, 87, 86} = 2;
 
+
+Point(56) = {-l1+l2,-l1,hc};
+Point(57) = {-l1+l2+r,-l1,hc};
+Point(58) = {l1-l2-r,-l1,hc};
+Point(59) = {l1-l2,-l1,hc};
+Point(60) = {-l1+l2+r,-l1+r,hc};
+Point(61) = {l1-l2-r,-l1+r,hc};
+Point(62) = {-x1,y1,hc};
+Point(63) = {-x2,y2,hc};
+Point(64) = {-x3,y3,hc};
+Point(65) = {x1,y1,hc};
+Point(66) = {x2,y2,hc};
+Point(67) = {x3,y3,hc};
+Point(68) = {-0.2, -0.8,hc};
+Point(69) = {0, -0.8,hc};
+Point(70) = {0.2, -0.8,hc};
+
+
+
+
+
+/*
 Extrude {0,0,hinc}{
         Surface{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36};
         Layers{n};
         Recombine;
-}
-//+
-//Physical Surface("top") = {109, 131, 153, 175, 197, 219, 241, 263, 285, 307, 329, 351, 373, 395, 417, 439, 461, 483, 505, 527, 549, 571, 593, 615, 637, 659, 681, 703, 725, 747, 769, 791, 813, 835, 857, 879};
+}*/
