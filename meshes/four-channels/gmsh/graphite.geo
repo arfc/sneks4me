@@ -352,3 +352,67 @@ Physical Surface("inwall3",112) = {2055, 2783, 1945, 1929, 1867, 1800, 1707, 152
 Physical Surface("inwall4",113) = {610, 588, 566, 544, 522, 19, 478, 456, 434, 416, 394, 360};
 //+
 Physical Volume("solid", 10) = {3270, 3239, 3208, 3363, 3332, 3301, 3425, 3487, 3394, 3456, 3580, 3549, 3735, 3704, 3797, 3766, 3983, 4045, 3952, 4014, 4107, 4076, 4138, 4169, 3921, 3890, 3828, 3673, 3859, 3642, 3611, 3518, 3146, 3115, 3084, 3177, 1992, 2054, 2147, 2302, 2364, 2395, 2426, 2457, 2488, 2519, 2581, 2612, 2643, 2674, 2705, 2736, 2550, 2767, 2798, 2953, 2984, 3077, 2333, 3046, 3015, 2922, 2829, 2891, 2860, 2271, 2240, 2209, 2178, 2116, 2085, 2023, 1965, 1872, 1934, 1903, 1810, 1841, 1779, 1748, 1717, 1624, 942, 880, 911, 1004, 1035, 1190, 1345, 1314, 1283, 1252, 1221, 1128, 1159, 1407, 1066, 1376, 1469, 1438, 1097, 973, 1562, 1531, 1500, 1686, 1655, 1593, 36, 35, 31, 30, 10, 11, 12, 13, 14, 15, 16, 9, 29, 8, 17, 18, 7, 28, 32, 34, 27, 6, 19, 20, 5, 26, 21, 33, 25, 4, 22, 3, 2, 1, 23, 24};
+//+
+Transfinite Curve {22, 24, 26, 28, 77, 70, 55, 57, 72, 7, 5, 3, 1} = 2 Using Progression 1;
+//+
+Transfinite Curve {21, 23, 25, 27, 29, 68, 67, 66, 9, 8, 6, 4, 2} = 2 Using Progression 1;
+//+
+Transfinite Curve {10, 14, 18, 4140, 4171} = 2 Using Progression 1;
+//+
+Transfinite Curve {11, 15, 19, 4079, 4081} = 2 Using Progression 1;
+//+
+Transfinite Curve {12, 16, 20, 4019, 4050} = 2 Using Progression 1;
+//+
+Transfinite Curve {30, 34, 38, 1285, 1287} = 2 Using Progression 1;
+//+
+Transfinite Curve {31, 35, 39, 1254, 1256} = 2 Using Progression 1;
+//+
+Transfinite Curve {32, 36, 40, 1194, 1225} = 2 Using Progression 1;
+//+
+Transfinite Curve {1288, 1257, 1226, 1164, 1162, 1379, 1472, 1503, 1689, 1784, 1845, 1907, 1939} = 2 Using Progression 1;
+//+
+Transfinite Curve {1319, 1317, 1195, 1131, 1133, 1412, 1441, 1534, 1658, 1751, 1814, 1877, 1970} = 2 Using Progression 1;
+//+
+Transfinite Curve {1846, 1815, 1813, 2585, 2740} = 2 Using Progression 1;
+//+
+Transfinite Curve {1908, 1876, 1874, 2616, 2709} = 2 Using Progression 1;
+//+
+Transfinite Curve {1936, 1938, 1969, 2647, 2678} = 2 Using Progression 1;
+//+
+Transfinite Curve {2679, 2677, 2708, 2739, 2770, 2801, 2832, 2245, 2181, 2118, 2087, 2026, 2028} = 2 Using Progression 1;
+//+
+Transfinite Curve {2648, 2617, 2586, 2553, 2555, 2927, 2896, 2276, 2214, 2149, 2057, 1995, 1997} = 2 Using Progression 1;
+//+
+Transfinite Curve {2121, 2119, 2150, 3212, 3367} = 2 Using Progression 1;
+//+
+Transfinite Curve {2090, 2058, 2056, 3243, 3336} = 2 Using Progression 1;
+//+
+Transfinite Curve {2025, 1994, 1996, 3274, 3305} = 2 Using Progression 1;
+//+
+Transfinite Curve {3306, 3304, 3335, 3366, 3397, 3459, 3552, 3738, 3769, 3988, 4049, 4080, 4174} = 2 Using Progression 1;
+//+
+Transfinite Curve {4143, 4112, 4018, 3955, 3800, 3707, 3583, 3492, 3430, 3211, 3213, 3244, 3275} = 2 Using Progression 1;
+//+
+Transfinite Curve {13, 17, 75, 80, 46, 43, 41, 885, 946, 1628, 1721, 1752, 1783} = 2 Using Progression 1;
+//+
+Transfinite Curve {62, 59, 71, 79, 81, 3830, 3799, 3768, 3770} = 2 Using Progression 1;
+//+
+Transfinite Curve {63, 56, 58, 52, 50, 48, 916, 978, 1533, 1502, 1504} = 2 Using Progression 1;
+//+
+Transfinite Curve {64, 60, 69, 53, 45, 47, 3644, 3613, 3582, 3551, 3553} = 2 Using Progression 1;
+//+
+Transfinite Curve {65, 61, 76, 83, 85, 1009, 1070, 1378, 1380} = 2 Using Progression 1;
+//+
+Transfinite Curve {33, 37, 78, 84, 49, 42, 44, 3086, 3119, 3150, 3182, 3396, 3398} = 2 Using Progression 1;
+//+
+Transfinite Curve {2771, 2554, 2524, 2492, 2461, 2428, 2430, 3089, 3863, 3894, 3925, 3956, 3987} = 2 Using Progression 1;
+//+
+Transfinite Curve {2802, 2800, 2955, 2493, 1629, 1595, 1597, 1659, 1690} = 2 Using Progression 1;
+//+
+Transfinite Curve {2833, 2831, 2924, 3017, 2398, 2400, 3120, 3647, 3677, 3708, 3739} = 2 Using Progression 1;
+//+
+Transfinite Curve {2864, 2862, 2893, 3048, 2462, 947, 945, 977, 1101, 1442, 1473} = 2 Using Progression 1;
+//+
+Transfinite Curve {2244, 2242, 2273, 2335, 2369, 3151, 3489, 3458, 3460} = 2 Using Progression 1;
+//+
+Transfinite Curve {2182, 2180, 2211, 2304, 2366, 2397, 884, 882, 915, 1008, 1040, 1132, 1163} = 2 Using Progression 1;
