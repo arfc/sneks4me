@@ -1,0 +1,64 @@
+#!/bin/bash
+# <CASENAME> <NODES> <RANKS PER NODE>  <WALLTIME>
+echo  "#!/bin/bash"                                              > $1.sh
+
+echo  "#COBALT -n $2 -t $4 -q default -A PANDAVal"             >> $1.sh
+
+echo  "#COBALT --mode script"                              >> $1.sh
+
+echo  "#COBALT -O $1"                                       >> $1.sh
+
+echo  "#COBALT -M achaube2@illinois.edu"                           >> $1.sh
+
+echo  cd `pwd`                                                  >> $1.sh
+
+echo  "echo" $1      ">"  SESSION.NAME                          >> $1.sh
+
+echo  "echo \`pwd\`'/' >> SESSION.NAME"                         >> $1.sh
+
+echo  rm -f  $1.his1                                            >> $1.sh
+
+echo  rm -f  $1.sch1                                            >> $1.sh
+
+echo  rm -f  $1.log1                                            >> $1.sh
+
+echo  mv $1.log $1.log1                                         >> $1.sh
+
+echo  mv $1.his $1.his1                                         >> $1.sh
+
+echo  mv $1.sch $1.sch1                                         >> $1.sh
+
+echo  rm -f logfile                                             >> $1.sh
+
+echo  rm -f ioinfo                                              >> $1.sh
+
+echo  sleep 5                                                   >> $1.sh
+
+core=$(($3*$2))
+
+# echo  aprun -n $core -N 64 "./nek5000"                          >> $1.sh
+echo runjob --np $core -p $3 --block '$COBALT_PARTNAME' : './nek5000'  >> $1.sh
+
+echo  sleep 5                                                   >> $1.sh
+
+echo  ln $1.log.$2 logfile                                      >> $1.sh
+
+echo  "exit 0;"                                                 >> $1.sh
+
+echo
+
+echo
+
+echo
+
+cat $1.sh
+
+echo
+echo
+
+chmod +x $1.sh
+qsub --mode script $1.sh
+
+sleep 3
+
+ln $1.log.$2 logfile

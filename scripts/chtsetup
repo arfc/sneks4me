@@ -1,7 +1,8 @@
 #!/bin/bash
 #shopt -s extglob
+# script converts geo to re2, sets up case files
 # arg 1 - working dir
-# arg 2 - msh file name
+# arg 2 - geo file name
 src=$PWD
 cd $1
 gmsh $2".geo" -3 -order 2 -o $2".msh" -format msh22
@@ -38,6 +39,6 @@ else
 fi
 genmap << EOF
 $2
-0.1
+0.01
 EOF
 

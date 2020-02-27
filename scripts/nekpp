@@ -32,7 +32,7 @@ if [ -e SIZE ] && [ -e $2.usr ] && [ -e $2.rea ]
 
 genmap << EOF
 $2
-0.1
+0.01
 EOF
 makenek $2 || exit 1
-nekmpi $2 $3 || exit 1
+nekbmpi $2 $3 || exit 1

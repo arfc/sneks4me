@@ -69,7 +69,11 @@ c      implicit none
       integer e
 c     e = gllel(eg)
 
-      qvol = 1.0
+      eps = 0.05
+      p0 = 31000000.0
+      H = 73.0
+      pi = 22.0/7.0
+      qvol = p0 * sin(pi*(z+eps)/(H+(2*eps)))
       if (eg.gt.nelgv) qvol = 0.0 ! glob el id > no. of el in glob v mesh
  
       return
@@ -118,12 +122,22 @@ c      implicit none
       return
       end
 c-----------------------------------------------------------------------
+
       subroutine userchk()
 
 c      implicit none
 
       include 'SIZE'
       include 'TOTAL'
+
+      parameter(lt=lx1*ly1*lz1*lelt)
+      common /myoutflow/ d(lt),w1(lt)      
+      ratio = 1.5
+      uin = 0
+
+      call turb_outflow(d,w1,ratio,uin)
+
+      if( time.ge.20) iostep = 1000   
 
       return
       end

@@ -1,0 +1,75 @@
+#! /usr/bin/env bash
+
+prj=""
+case=$1
+nnode=$2
+mode="c32"
+
+if [[ $# -eq 3 ]]; then
+  hrs=0
+  mins=$3
+elif [[ $# -eq 4 ]]; then
+  hrs=$3
+  mins=$4
+elif [[ $# -eq 5 ]]; then
+  hrs=$3
+  mins=$4
+  prj=$5
+elif [[ $# -eq 6 ]]; then
+  hrs=$3
+  mins=$4
+  prj=$5
+  mode=$6
+else
+  echo "Between 3 and 6 arguments required for nekd!"
+  echo "usage: nekd casename nnodes hours* minutes project* mode*"
+  echo "*optional arguments (hours required for project)"
+  exit
+fi
+
+echo $case     >  SESSION.NAME
+echo `pwd`'/' >>  SESSION.NAME
+
+if [ -e ioinfo ]; then
+  rm -f ioinfo
+fi
+
+if [ -L logfile ]; then
+  unlink logfile
+elif [ -e logfile ]; then
+  echo "Warning: logfile found, moving to logfile.bak"
+  mv logfile logfile.bak
+fi
+
+# don't need to check and delete *.cobaltlog, only the one we're about to write
+file=( $case.cobaltlog )
+if [ -e $file ]; then
+  rm -f $case.cobaltlog
+fi
+
+file=( $case.output )
+if [ -e $file ]; then
+  rm -f $case.output
+fi
+
+file=( $case.error )
+if [ -e $file ]; then
+  rm -f $case.error
+fi
+
+ln -s $case.output logfile
+
+if [ "$prj" = "" ]; then
+  arg=""
+  msg="to default project"
+else
+  arg=" -A $prj"
+  msg="to project \"$prj\""
+fi
+
+#echo "qsub -n $nnode --mode c32$arg -t $hrs:$mins:00 -O `pwd`'/'$case nek5000"
+echo "submitting job \"$case\" on $nnode nodes for $hrs:$mins $msg"
+echo "     requiring $(( $hrs * $nnode * 16)) CPU hours"
+qsub -n $nnode --mode $mode$arg -t $hrs:$mins:00 -O `pwd`'/'$case nek5000
+sleep 4
+qstat -f
