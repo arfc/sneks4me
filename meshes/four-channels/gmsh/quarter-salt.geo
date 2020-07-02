@@ -25,7 +25,7 @@ h = 1; //z coordinate at which plenum begins, inches
 n = 10; // no. of layers in plenum
 hinc = 7; //plenum height, inches
 hc = -62; //z coordinate at which channel begins
-/*
+
 Point(0) = {0,0,h};
 Point(1) = {-l1,-l1,h};
 Point(2) = {-l1+l2,-l1,h};
@@ -290,7 +290,7 @@ Plane Surface(35) = {35};
 Curve Loop(36) = {43, 44, 41, 42};
 Plane Surface(36) = {36};
 
-*/
+/*
 
 Point(56) = {-l1+l2,-l1,hc};
 Point(57) = {-l1+l2+r,-l1,hc};
@@ -415,4 +415,4 @@ Line(63) = {95, 63};
 Line(64) = {93, 64};
 Line(65) = {90, 65};
 Line(66) = {94, 66};
-Line(67) = {92, 67};
+Line(67) = {92, 67};*/
