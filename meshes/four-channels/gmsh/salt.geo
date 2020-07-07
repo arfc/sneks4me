@@ -23,8 +23,11 @@ y9 = Sqrt((0.3^2)-(x9-l1+l2+r)^2)-l1;
 
 h = 1; //z coordinate at which plenum begins, inches
 n = 10; // no. of layers in plenum
-hinc = 7; //plenum height, inches
+hp = 7; //plenum height, inches
 hc = -62; //z coordinate at which channel begins
+lc = 63; //channel length
+
+Geometry.CopyMeshingMethod=1;
 
 Point(0) = {0,0,h};
 Point(1) = {-l1,-l1,h};
@@ -473,30 +476,162 @@ Plane Surface(63) = {63};
 Curve Loop(64) = {132, -141, -127, 129};
 Plane Surface(64) = {64};
 //+
-Rotate {{0, 0, 1}, {0, 0, -62}, Pi/2} {
-  Duplicata { Point{63}; Point{64}; Point{95}; Point{62}; Point{60}; Point{93}; Point{91}; Point{56}; Point{72}; Point{88}; Point{71}; Point{81}; Point{86}; Point{68}; Point{57}; Point{75}; Point{83}; Point{69}; Point{78}; Point{76}; Point{84}; Point{70}; Point{79}; Point{77}; Point{85}; Point{61}; Point{80}; Point{74}; Point{67}; Point{92}; Point{82}; Point{94}; Point{89}; Point{66}; Point{58}; Point{90}; Point{87}; Point{65}; Point{73}; Point{59}; Curve{139}; Curve{150}; Curve{138}; Curve{135}; Curve{140}; Curve{151}; Curve{134}; Curve{149}; Curve{137}; Curve{93}; Curve{136}; Curve{97}; Curve{96}; Curve{88}; Curve{133}; Curve{94}; Curve{92}; Curve{95}; Curve{89}; Curve{104}; Curve{91}; Curve{90}; Curve{103}; Curve{102}; Curve{100}; Curve{101}; Curve{107}; Curve{99}; Curve{98}; Curve{105}; Curve{106}; Curve{109}; Curve{108}; Curve{118}; Curve{111}; Curve{110}; Curve{117}; Curve{116}; Curve{115}; Curve{114}; Curve{125}; Curve{113}; Curve{112}; Curve{123}; Curve{124}; Curve{148}; Curve{144}; Curve{154}; Curve{122}; Curve{121}; Curve{143}; Curve{130}; Curve{131}; Curve{147}; Curve{153}; Curve{119}; Curve{120}; Curve{142}; Curve{132}; Curve{126}; Curve{129}; Curve{152}; Curve{146}; Curve{141}; Curve{127}; Curve{145}; Curve{128}; Surface{39}; Surface{38}; Surface{40}; Surface{50}; Surface{37}; Surface{51}; Surface{49}; Surface{52}; Surface{41}; Surface{53}; Surface{54}; Surface{42}; Surface{55}; Surface{56}; Surface{43}; Surface{57}; Surface{58}; Surface{44}; Surface{59}; Surface{45}; Surface{61}; Surface{46}; Surface{60}; Surface{63}; Surface{62}; Surface{47}; Surface{64}; Surface{48}; }
-}
+Transfinite Surface {37, 38, 49, 50, 52, 39, 51, 40, 54, 53, 41, 56, 55, 42, 58, 57, 43, 60, 59, 62, 44, 61, 64, 63, 45, 48, 46, 47};
 //+
-Rotate {{0, 0, 1}, {0, 0, -62}, Pi/2} {
-  Duplicata { Point{129}; Point{133}; Point{124}; Point{127}; Point{135}; Point{131}; Point{125}; Point{121}; Point{134}; Point{128}; Point{123}; Point{132}; Point{126}; Point{130}; Point{117}; Point{119}; Point{120}; Point{122}; Point{113}; Point{115}; Point{116}; Point{118}; Point{109}; Point{111}; Point{112}; Point{114}; Point{100}; Point{104}; Point{107}; Point{97}; Point{101}; Point{110}; Point{105}; Point{98}; Point{96}; Point{108}; Point{102}; Point{99}; Point{106}; Point{103}; Curve{217}; Curve{208}; Curve{209}; Curve{220}; Curve{212}; Curve{216}; Curve{205}; Curve{202}; Curve{200}; Curve{221}; Curve{218}; Curve{213}; Curve{207}; Curve{199}; Curve{201}; Curve{219}; Curve{215}; Curve{206}; Curve{203}; Curve{214}; Curve{211}; Curve{195}; Curve{191}; Curve{198}; Curve{204}; Curve{193}; Curve{196}; Curve{210}; Curve{188}; Curve{185}; Curve{192}; Curve{187}; Curve{194}; Curve{190}; Curve{197}; Curve{181}; Curve{184}; Curve{177}; Curve{186}; Curve{179}; Curve{182}; Curve{189}; Curve{174}; Curve{178}; Curve{164}; Curve{180}; Curve{171}; Curve{159}; Curve{165}; Curve{160}; Curve{183}; Curve{175}; Curve{166}; Curve{170}; Curve{158}; Curve{155}; Curve{156}; Curve{172}; Curve{176}; Curve{161}; Curve{167}; Curve{162}; Curve{157}; Curve{173}; Curve{169}; Curve{163}; Curve{168}; Surface{347}; Surface{327}; Surface{357}; Surface{337}; Surface{317}; Surface{352}; Surface{322}; Surface{342}; Surface{307}; Surface{312}; Surface{332}; Surface{292}; Surface{297}; Surface{302}; Surface{277}; Surface{282}; Surface{287}; Surface{262}; Surface{267}; Surface{232}; Surface{272}; Surface{247}; Surface{222}; Surface{257}; Surface{237}; Surface{227}; Surface{252}; Surface{242}; }
-}
+Recombine Surface {37, 38, 49, 50, 52, 39, 51, 40, 54, 53, 41, 56, 55, 42, 58, 57, 43, 60, 59, 62, 44, 61, 64, 63, 45, 48, 46, 47};
+Transfinite Surface {1, 24, 2, 23, 22, 3, 21, 4, 20, 25, 5, 19, 26, 6, 33, 27, 18, 7, 28, 34, 32, 17, 8, 29, 16, 13, 15, 14, 36, 9, 35, 31, 30, 10, 11, 12};
+Recombine Surface {1, 24, 2, 23, 22, 3, 21, 4, 20, 25, 5, 19, 26, 6, 33, 27, 18, 7, 28, 34, 32, 17, 8, 29, 16, 13, 15, 14, 36, 9, 35, 31, 30, 10, 11, 12};
 //+
-Rotate {{0, 0, 1}, {0, 0, -62}, Pi/2} {
-  Duplicata { Point{140}; Point{144}; Point{147}; Point{149}; Point{137}; Point{141}; Point{145}; Point{139}; Point{153}; Point{148}; Point{136}; Point{142}; Point{138}; Point{157}; Point{152}; Point{146}; Point{143}; Point{161}; Point{156}; Point{151}; Point{150}; Point{167}; Point{160}; Point{155}; Point{171}; Point{154}; Point{174}; Point{175}; Point{164}; Point{159}; Point{168}; Point{172}; Point{158}; Point{173}; Point{163}; Point{169}; Point{166}; Point{170}; Point{162}; Point{165}; Curve{367}; Curve{373}; Curve{377}; Curve{361}; Curve{368}; Curve{363}; Curve{374}; Curve{369}; Curve{362}; Curve{385}; Curve{378}; Curve{375}; Curve{360}; Curve{358}; Curve{364}; Curve{370}; Curve{392}; Curve{359}; Curve{365}; Curve{382}; Curve{384}; Curve{372}; Curve{376}; Curve{366}; Curve{371}; Curve{399}; Curve{390}; Curve{391}; Curve{381}; Curve{383}; Curve{380}; Curve{379}; Curve{408}; Curve{396}; Curve{398}; Curve{388}; Curve{389}; Curve{416}; Curve{387}; Curve{386}; Curve{421}; Curve{424}; Curve{403}; Curve{409}; Curve{394}; Curve{397}; Curve{411}; Curve{415}; Curve{418}; Curve{422}; Curve{393}; Curve{395}; Curve{423}; Curve{419}; Curve{401}; Curve{404}; Curve{417}; Curve{406}; Curve{410}; Curve{412}; Curve{414}; Curve{420}; Curve{402}; Curve{400}; Curve{413}; Curve{407}; Curve{405}; Surface{435}; Surface{450}; Surface{460}; Surface{425}; Surface{440}; Surface{475}; Surface{430}; Surface{455}; Surface{445}; Surface{490}; Surface{470}; Surface{465}; Surface{505}; Surface{485}; Surface{480}; Surface{525}; Surface{500}; Surface{540}; Surface{495}; Surface{515}; Surface{555}; Surface{560}; Surface{530}; Surface{545}; Surface{510}; Surface{550}; Surface{535}; Surface{520}; }
-}
+Transfinite Curve {88, 149, 150, 151, 93, 103, 106, 117, 124, 154, 142, 153, 152, 128} = 1 Using Progression 1;
+//+
+Transfinite Curve {137, 133, 95, 91, 99, 110, 113, 120, 129, 141, 145} = 1 Using Progression 1;
+//+
+Transfinite Curve {138, 134, 97, 92, 100, 108, 115, 122, 131, 142, 146} = 1 Using Progression 1;
+//+
+Transfinite Curve {89, 96, 135, 139} = 1 Using Progression 1;
+//+
+Transfinite Curve {90, 94, 136, 140} = 1 Using Progression 1;
+//+
+Transfinite Curve {98, 101, 102, 104} = 1 Using Progression 1;
+//+
+Transfinite Curve {111, 109, 105, 107} = 1 Using Progression 1;
+//+
+Transfinite Curve {112, 114, 116, 118} = 1 Using Progression 1;
+//+
+Transfinite Curve {119, 121, 123, 125} = 1 Using Progression 1;
+//+
+Transfinite Curve {126, 130, 144, 148} = 1 Using Progression 1;
+//+
+Transfinite Curve {127, 132, 143, 147} = 1 Using Progression 1;
+//+
+Transfinite Curve {2, 4, 6, 8, 9, 66, 67, 68, 29, 27, 25, 23, 21} = 1 Using Progression 1;
+//+
+Transfinite Curve {1, 3, 5, 7, 72, 57, 55, 70, 77, 28, 26, 24, 22} = 1 Using Progression 1;
+//+
+Transfinite Curve {10, 14, 18} = 1 Using Progression 1;
+//+
+Transfinite Curve {11, 15, 19} = 1 Using Progression 1;
+//+
+Transfinite Curve {12, 16, 20} = 1 Using Progression 1;
+//+
+Transfinite Curve {13, 17, 75, 80, 46, 43, 41} = 1 Using Progression 1;
+//+
+Transfinite Curve {62, 59, 71, 79, 81} = 1 Using Progression 1;
+//+
+Transfinite Curve {63, 56, 58, 52, 50, 48} = 1 Using Progression 1;
+//+
+Transfinite Curve {64, 60, 69, 53, 45, 47} = 1 Using Progression 1;
+//+
+Transfinite Curve {65, 61, 76, 83, 85} = 1 Using Progression 1;
+//+
+Transfinite Curve {33, 37, 78, 84, 49, 42, 44} = 1 Using Progression 1;
+//+
+Transfinite Curve {32, 36, 40} = 1 Using Progression 1;
+//+
+Transfinite Curve {31, 35, 39} = 1 Using Progression 1;
+//+
+Transfinite Curve {30, 34, 38} = 1 Using Progression 1;
 //+
 Rotate {{0, 0, 1}, {0, 0, 1}, Pi/2} {
-  Duplicata { Point{0}; Point{21}; Point{24}; Point{23}; Point{22}; Point{38}; Point{11}; Point{26}; Point{25}; Point{55}; Point{43}; Point{10}; Point{27}; Point{40}; Point{42}; Point{34}; Point{9}; Point{29}; Point{33}; Point{41}; Point{45}; Point{39}; Point{48}; Point{1}; Point{17}; Point{32}; Point{7}; Point{16}; Point{44}; Point{49}; Point{15}; Point{51}; Point{28}; Point{54}; Point{50}; Point{2}; Point{14}; Point{52}; Point{31}; Point{3}; Point{53}; Point{37}; Point{8}; Point{13}; Point{20}; Point{36}; Point{19}; Point{35}; Point{18}; Point{4}; Point{12}; Point{5}; Point{30}; Point{6}; Curve{44}; Curve{47}; Curve{41}; Curve{42}; Curve{43}; Curve{81}; Curve{51}; Curve{46}; Curve{45}; Curve{48}; Curve{79}; Curve{80}; Curve{75}; Curve{82}; Curve{20}; Curve{50}; Curve{49}; Curve{53}; Curve{52}; Curve{71}; Curve{73}; Curve{7}; Curve{19}; Curve{17}; Curve{72}; Curve{16}; Curve{5}; Curve{54}; Curve{58}; Curve{83}; Curve{85}; Curve{84}; Curve{59}; Curve{57}; Curve{18}; Curve{8}; Curve{15}; Curve{3}; Curve{9}; Curve{13}; Curve{6}; Curve{12}; Curve{74}; Curve{69}; Curve{55}; Curve{56}; Curve{11}; Curve{4}; Curve{66}; Curve{62}; Curve{1}; Curve{14}; Curve{87}; Curve{76}; Curve{60}; Curve{70}; Curve{2}; Curve{10}; Curve{86}; Curve{78}; Curve{67}; Curve{63}; Curve{77}; Curve{61}; Curve{64}; Curve{68}; Curve{28}; Curve{37}; Curve{29}; Curve{65}; Curve{40}; Curve{33}; Curve{27}; Curve{36}; Curve{26}; Curve{25}; Curve{32}; Curve{35}; Curve{31}; Curve{23}; Curve{39}; Curve{24}; Curve{30}; Curve{21}; Curve{34}; Curve{22}; Curve{38}; Surface{36}; Surface{34}; Surface{33}; Surface{25}; Surface{35}; Surface{32}; Surface{26}; Surface{4}; Surface{3}; Surface{27}; Surface{5}; Surface{31}; Surface{2}; Surface{28}; Surface{21}; Surface{22}; Surface{6}; Surface{20}; Surface{1}; Surface{23}; Surface{29}; Surface{7}; Surface{30}; Surface{19}; Surface{24}; Surface{8}; Surface{18}; Surface{9}; Surface{17}; Surface{16}; Surface{10}; Surface{15}; Surface{14}; Surface{11}; Surface{13}; Surface{12}; }
+  Duplicata { Point{1}; Point{28}; Point{9}; Point{2}; Point{32}; Point{15}; Point{3}; Point{16}; Point{10}; Point{33}; Point{17}; Point{34}; Point{7}; Point{11}; Point{29}; Point{51}; Point{43}; Point{48}; Point{38}; Point{52}; Point{42}; Point{55}; Point{49}; Point{4}; Point{53}; Point{41}; Point{26}; Point{50}; Point{24}; Point{40}; Point{5}; Point{8}; Point{44}; Point{18}; Point{20}; Point{30}; Point{19}; Point{31}; Point{35}; Point{27}; Point{22}; Point{37}; Point{36}; Point{21}; Point{54}; Point{45}; Point{6}; Point{12}; Point{13}; Point{14}; Point{39}; Point{25}; Point{23}; Point{0}; Curve{1}; Curve{18}; Curve{2}; Curve{14}; Curve{3}; Curve{4}; Curve{10}; Curve{11}; Curve{19}; Curve{5}; Curve{15}; Curve{6}; Curve{12}; Curve{8}; Curve{16}; Curve{13}; Curve{7}; Curve{20}; Curve{17}; Curve{9}; Curve{62}; Curve{75}; Curve{72}; Curve{66}; Curve{59}; Curve{51}; Curve{63}; Curve{71}; Curve{57}; Curve{80}; Curve{82}; Curve{67}; Curve{56}; Curve{64}; Curve{55}; Curve{58}; Curve{73}; Curve{79}; Curve{60}; Curve{68}; Curve{81}; Curve{46}; Curve{52}; Curve{54}; Curve{65}; Curve{70}; Curve{69}; Curve{30}; Curve{33}; Curve{21}; Curve{31}; Curve{32}; Curve{61}; Curve{29}; Curve{34}; Curve{23}; Curve{53}; Curve{74}; Curve{45}; Curve{50}; Curve{27}; Curve{37}; Curve{35}; Curve{25}; Curve{47}; Curve{43}; Curve{36}; Curve{77}; Curve{76}; Curve{87}; Curve{83}; Curve{22}; Curve{24}; Curve{38}; Curve{26}; Curve{39}; Curve{28}; Curve{78}; Curve{40}; Curve{86}; Curve{84}; Curve{49}; Curve{85}; Curve{48}; Curve{42}; Curve{41}; Curve{44}; Surface{1}; Surface{24}; Surface{2}; Surface{23}; Surface{22}; Surface{3}; Surface{21}; Surface{4}; Surface{20}; Surface{5}; Surface{25}; Surface{19}; Surface{26}; Surface{6}; Surface{18}; Surface{33}; Surface{27}; Surface{7}; Surface{17}; Surface{28}; Surface{13}; Surface{8}; Surface{16}; Surface{32}; Surface{14}; Surface{15}; Surface{34}; Surface{29}; Surface{9}; Surface{12}; Surface{11}; Surface{10}; Surface{30}; Surface{31}; Surface{35}; Surface{36}; }
 }
 //+
 Rotate {{0, 0, 1}, {0, 0, 1}, Pi} {
-  Duplicata { Point{1}; Point{9}; Point{28}; Point{32}; Point{10}; Point{2}; Point{15}; Point{33}; Point{16}; Point{11}; Point{34}; Point{17}; Point{3}; Point{7}; Point{29}; Point{38}; Point{43}; Point{55}; Point{51}; Point{48}; Point{24}; Point{42}; Point{26}; Point{52}; Point{21}; Point{49}; Point{41}; Point{40}; Point{22}; Point{0}; Point{53}; Point{50}; Point{27}; Point{44}; Point{23}; Point{4}; Point{219}; Point{45}; Point{8}; Point{25}; Point{31}; Point{54}; Point{220}; Point{20}; Point{19}; Point{39}; Point{224}; Point{5}; Point{18}; Point{37}; Point{223}; Point{36}; Point{225}; Point{14}; Point{30}; Point{228}; Point{35}; Point{229}; Point{226}; Point{13}; Point{230}; Point{237}; Point{236}; Point{235}; Point{233}; Point{231}; Point{234}; Point{244}; Point{12}; Point{238}; Point{249}; Point{245}; Point{240}; Point{242}; Point{252}; Point{241}; Point{243}; Point{250}; Point{247}; Point{6}; Point{246}; Point{254}; Point{253}; Point{248}; Point{256}; Point{251}; Point{257}; Point{259}; Point{258}; Point{255}; Point{260}; Point{261}; Point{262}; Point{263}; Point{266}; Point{264}; Point{265}; Point{267}; Point{268}; Point{269}; Curve{18}; Curve{1}; Curve{14}; Curve{3}; Curve{19}; Curve{2}; Curve{10}; Curve{4}; Curve{15}; Curve{5}; Curve{6}; Curve{11}; Curve{20}; Curve{16}; Curve{7}; Curve{8}; Curve{12}; Curve{13}; Curve{17}; Curve{9}; Curve{51}; Curve{75}; Curve{72}; Curve{80}; Curve{82}; Curve{62}; Curve{59}; Curve{66}; Curve{81}; Curve{71}; Curve{57}; Curve{79}; Curve{73}; Curve{46}; Curve{63}; Curve{47}; Curve{56}; Curve{67}; Curve{55}; Curve{58}; Curve{54}; Curve{52}; Curve{43}; Curve{45}; Curve{44}; Curve{64}; Curve{68}; Curve{60}; Curve{50}; Curve{53}; Curve{70}; Curve{74}; Curve{69}; Curve{42}; Curve{41}; Curve{766}; Curve{83}; Curve{65}; Curve{49}; Curve{48}; Curve{61}; Curve{29}; Curve{87}; Curve{76}; Curve{77}; Curve{768}; Curve{767}; Curve{33}; Curve{32}; Curve{85}; Curve{84}; Curve{773}; Curve{31}; Curve{27}; Curve{37}; Curve{30}; Curve{771}; Curve{772}; Curve{25}; Curve{36}; Curve{774}; Curve{775}; Curve{78}; Curve{86}; Curve{28}; Curve{21}; Curve{779}; Curve{780}; Curve{35}; Curve{23}; Curve{34}; Curve{782}; Curve{781}; Curve{776}; Curve{777}; Curve{26}; Curve{40}; Curve{784}; Curve{783}; Curve{794}; Curve{793}; Curve{795}; Curve{791}; Curve{792}; Curve{788}; Curve{787}; Curve{785}; Curve{790}; Curve{789}; Curve{807}; Curve{806}; Curve{24}; Curve{39}; Curve{797}; Curve{796}; Curve{817}; Curve{816}; Curve{809}; Curve{808}; Curve{799}; Curve{802}; Curve{803}; Curve{822}; Curve{823}; Curve{800}; Curve{801}; Curve{804}; Curve{805}; Curve{818}; Curve{819}; Curve{812}; Curve{813}; Curve{38}; Curve{22}; Curve{810}; Curve{811}; Curve{826}; Curve{827}; Curve{824}; Curve{825}; Curve{815}; Curve{814}; Curve{828}; Curve{829}; Curve{820}; Curve{821}; Curve{831}; Curve{830}; Curve{834}; Curve{833}; Curve{832}; Curve{835}; Curve{836}; Curve{837}; Curve{838}; Curve{840}; Curve{839}; Curve{841}; Curve{845}; Curve{844}; Curve{842}; Curve{843}; Curve{846}; Curve{848}; Curve{847}; Curve{850}; Curve{849}; Surface{1}; Surface{2}; Surface{24}; Surface{23}; Surface{3}; Surface{22}; Surface{21}; Surface{4}; Surface{25}; Surface{20}; Surface{5}; Surface{26}; Surface{33}; Surface{19}; Surface{6}; Surface{27}; Surface{34}; Surface{32}; Surface{18}; Surface{7}; Surface{28}; Surface{36}; Surface{29}; Surface{35}; Surface{17}; Surface{8}; Surface{851}; Surface{31}; Surface{16}; Surface{856}; Surface{30}; Surface{9}; Surface{15}; Surface{861}; Surface{871}; Surface{14}; Surface{13}; Surface{866}; Surface{876}; Surface{10}; Surface{881}; Surface{906}; Surface{896}; Surface{886}; Surface{11}; Surface{916}; Surface{901}; Surface{891}; Surface{951}; Surface{931}; Surface{921}; Surface{911}; Surface{961}; Surface{12}; Surface{956}; Surface{936}; Surface{926}; Surface{946}; Surface{976}; Surface{966}; Surface{941}; Surface{981}; Surface{986}; Surface{971}; Surface{991}; Surface{996}; Surface{1001}; Surface{1006}; Surface{1016}; Surface{1011}; Surface{1021}; Surface{1026}; }
+  Duplicata { Point{1}; Point{28}; Point{9}; Point{2}; Point{32}; Point{15}; Point{3}; Point{16}; Point{10}; Point{33}; Point{17}; Point{34}; Point{7}; Point{11}; Point{29}; Point{51}; Point{43}; Point{48}; Point{38}; Point{52}; Point{42}; Point{55}; Point{49}; Point{4}; Point{53}; Point{41}; Point{26}; Point{50}; Point{24}; Point{40}; Point{5}; Point{8}; Point{44}; Point{18}; Point{20}; Point{30}; Point{19}; Point{31}; Point{35}; Point{27}; Point{22}; Point{37}; Point{36}; Point{21}; Point{54}; Point{45}; Point{6}; Point{12}; Point{13}; Point{14}; Point{39}; Point{25}; Point{23}; Point{0}; Point{105}; Point{100}; Point{107}; Point{112}; Point{117}; Point{97}; Point{103}; Point{110}; Point{101}; Point{106}; Point{122}; Point{136}; Point{99}; Point{148}; Point{108}; Point{116}; Point{113}; Point{125}; Point{102}; Point{111}; Point{135}; Point{121}; Point{147}; Point{118}; Point{115}; Point{128}; Point{141}; Point{123}; Point{146}; Point{120}; Point{140}; Point{133}; Point{145}; Point{127}; Point{137}; Point{130}; Point{119}; Point{132}; Point{138}; Point{144}; Point{129}; Point{134}; Point{126}; Point{131}; Point{143}; Point{142}; Curve{1}; Curve{18}; Curve{2}; Curve{14}; Curve{3}; Curve{4}; Curve{10}; Curve{11}; Curve{19}; Curve{5}; Curve{15}; Curve{6}; Curve{12}; Curve{8}; Curve{16}; Curve{13}; Curve{20}; Curve{7}; Curve{17}; Curve{9}; Curve{62}; Curve{75}; Curve{72}; Curve{59}; Curve{66}; Curve{51}; Curve{63}; Curve{71}; Curve{57}; Curve{80}; Curve{82}; Curve{56}; Curve{67}; Curve{64}; Curve{58}; Curve{55}; Curve{73}; Curve{79}; Curve{60}; Curve{68}; Curve{46}; Curve{81}; Curve{54}; Curve{52}; Curve{65}; Curve{70}; Curve{69}; Curve{30}; Curve{33}; Curve{21}; Curve{31}; Curve{32}; Curve{29}; Curve{61}; Curve{23}; Curve{34}; Curve{74}; Curve{53}; Curve{45}; Curve{50}; Curve{27}; Curve{37}; Curve{35}; Curve{25}; Curve{47}; Curve{43}; Curve{36}; Curve{77}; Curve{76}; Curve{87}; Curve{83}; Curve{22}; Curve{24}; Curve{38}; Curve{26}; Curve{39}; Curve{78}; Curve{40}; Curve{28}; Curve{86}; Curve{84}; Curve{85}; Curve{49}; Curve{42}; Curve{48}; Curve{41}; Curve{44}; Curve{164}; Curve{165}; Curve{159}; Curve{171}; Curve{169}; Curve{176}; Curve{185}; Curve{184}; Curve{155}; Curve{158}; Curve{166}; Curve{173}; Curve{177}; Curve{160}; Curve{162}; Curve{167}; Curve{168}; Curve{192}; Curve{196}; Curve{220}; Curve{213}; Curve{161}; Curve{157}; Curve{239}; Curve{240}; Curve{170}; Curve{174}; Curve{191}; Curve{182}; Curve{183}; Curve{179}; Curve{197}; Curve{175}; Curve{178}; Curve{211}; Curve{214}; Curve{190}; Curve{198}; Curve{236}; Curve{238}; Curve{189}; Curve{187}; Curve{181}; Curve{186}; Curve{212}; Curve{201}; Curve{225}; Curve{193}; Curve{200}; Curve{237}; Curve{235}; Curve{188}; Curve{194}; Curve{223}; Curve{224}; Curve{207}; Curve{222}; Curve{234}; Curve{232}; Curve{199}; Curve{208}; Curve{216}; Curve{231}; Curve{203}; Curve{215}; Curve{206}; Curve{218}; Curve{221}; Curve{233}; Curve{229}; Curve{205}; Curve{217}; Curve{210}; Curve{202}; Curve{204}; Curve{209}; Curve{230}; Curve{227}; Curve{228}; Curve{226}; Surface{1}; Surface{24}; Surface{2}; Surface{23}; Surface{22}; Surface{3}; Surface{21}; Surface{4}; Surface{20}; Surface{5}; Surface{25}; Surface{19}; Surface{26}; Surface{6}; Surface{18}; Surface{33}; Surface{27}; Surface{7}; Surface{17}; Surface{28}; Surface{13}; Surface{8}; Surface{16}; Surface{32}; Surface{14}; Surface{15}; Surface{34}; Surface{29}; Surface{9}; Surface{12}; Surface{11}; Surface{10}; Surface{30}; Surface{31}; Surface{35}; Surface{36}; Surface{267}; Surface{252}; Surface{242}; Surface{292}; Surface{317}; Surface{277}; Surface{257}; Surface{262}; Surface{247}; Surface{372}; Surface{272}; Surface{417}; Surface{302}; Surface{287}; Surface{322}; Surface{282}; Surface{357}; Surface{412}; Surface{307}; Surface{337}; Surface{297}; Surface{407}; Surface{327}; Surface{377}; Surface{312}; Surface{347}; Surface{402}; Surface{332}; Surface{382}; Surface{352}; Surface{367}; Surface{397}; Surface{362}; Surface{392}; Surface{342}; Surface{387}; }
 }
 //+
-Transfinite Surface {37, 38, 39, 50, 49, 40, 51, 52, 41, 53, 54, 42, 55, 56, 43, 57, 58, 44, 59, 60, 61, 62, 45, 63, 46, 64, 47, 48};
+
+
+// Extrusion of plenum fluid from stringer top to outlet
+Extrude {0, 0, hp} {
+  Surface{1}; Surface{24}; Surface{940}; Surface{2}; Surface{23}; Surface{935}; Surface{930}; Surface{22}; Surface{925}; Surface{3}; Surface{21}; Surface{915}; Surface{920}; Surface{4}; Surface{20}; Surface{910}; Surface{905}; Surface{5}; Surface{19}; Surface{25}; Surface{6}; Surface{18}; Surface{900}; Surface{895}; Surface{26}; Surface{890}; Surface{13}; Surface{7}; Surface{17}; Surface{27}; Surface{33}; Surface{880}; Surface{14}; Surface{16}; Surface{15}; Surface{8}; Surface{885}; Surface{870}; Surface{12}; Surface{28}; Surface{875}; Surface{29}; Surface{11}; Surface{9}; Surface{860}; Surface{32}; Surface{10}; Surface{34}; Surface{865}; Surface{30}; Surface{252}; Surface{242}; Surface{267}; Surface{855}; Surface{850}; Surface{31}; Surface{835}; Surface{845}; Surface{257}; Surface{35}; Surface{247}; Surface{262}; Surface{277}; Surface{292}; Surface{840}; Surface{36}; Surface{825}; Surface{272}; Surface{830}; Surface{317}; Surface{820}; Surface{815}; Surface{302}; Surface{810}; Surface{372}; Surface{287}; Surface{805}; Surface{800}; Surface{785}; Surface{795}; Surface{790}; Surface{417}; Surface{282}; Surface{780}; Surface{760}; Surface{322}; Surface{765}; Surface{357}; Surface{750}; Surface{755}; Surface{745}; Surface{770}; Surface{307}; Surface{775}; Surface{297}; Surface{740}; Surface{725}; Surface{412}; Surface{720}; Surface{337}; Surface{735}; Surface{700}; Surface{715}; Surface{690}; Surface{730}; Surface{680}; Surface{695}; Surface{710}; Surface{327}; Surface{705}; Surface{377}; Surface{407}; Surface{312}; Surface{675}; Surface{685}; Surface{670}; Surface{665}; Surface{660}; Surface{655}; Surface{645}; Surface{650}; Surface{347}; Surface{402}; Surface{332}; Surface{635}; Surface{640}; Surface{630}; Surface{382}; Surface{352}; Surface{625}; Surface{620}; Surface{367}; Surface{397}; Surface{615}; Surface{610}; Surface{362}; Surface{605}; Surface{342}; Surface{392}; Surface{600}; Surface{595}; Surface{590}; Surface{387}; Surface{585}; Layers{{1,2,2,3},{0.05,0.25,0.5,1}}; Recombine;
+}
+
+
+
+
+
 //+
-Transfinite Surface {733, 728, 713, 703, 688, 673, 653, 628, 638, 633, 753, 743, 738, 643, 723, 648, 708, 758, 693, 663, 678, 658, 763, 748, 718, 698, 668, 683};
+Rotate {{0, 0, 1}, {0, 0, -62}, 3*Pi/2} {
+  Duplicata { Point{56}; Point{71}; Point{86}; Point{57}; Point{78}; Point{62}; Point{91}; Point{88}; Point{79}; Point{81}; Point{95}; Point{80}; Point{63}; Point{83}; Point{93}; Point{58}; Point{84}; Point{72}; Point{87}; Point{64}; Point{73}; Point{59}; Point{85}; Point{75}; Point{60}; Point{82}; Point{76}; Point{89}; Point{68}; Point{90}; Point{65}; Point{77}; Point{69}; Point{94}; Point{74}; Point{92}; Point{66}; Point{70}; Point{67}; Point{61}; Curve{88}; Curve{89}; Curve{90}; Curve{98}; Curve{137}; Curve{149}; Curve{133}; Curve{96}; Curve{95}; Curve{111}; Curve{91}; Curve{94}; Curve{134}; Curve{112}; Curve{150}; Curve{138}; Curve{101}; Curve{99}; Curve{97}; Curve{135}; Curve{119}; Curve{110}; Curve{109}; Curve{136}; Curve{92}; Curve{126}; Curve{151}; Curve{139}; Curve{127}; Curve{128}; Curve{113}; Curve{114}; Curve{102}; Curve{100}; Curve{93}; Curve{140}; Curve{121}; Curve{120}; Curve{105}; Curve{108}; Curve{129}; Curve{130}; Curve{103}; Curve{104}; Curve{132}; Curve{141}; Curve{145}; Curve{152}; Curve{115}; Curve{116}; Curve{107}; Curve{106}; Curve{142}; Curve{122}; Curve{123}; Curve{131}; Curve{144}; Curve{143}; Curve{153}; Curve{146}; Curve{117}; Curve{118}; Curve{154}; Curve{147}; Curve{125}; Curve{124}; Curve{148}; Surface{37}; Surface{49}; Surface{52}; Surface{54}; Surface{38}; Surface{50}; Surface{56}; Surface{51}; Surface{39}; Surface{58}; Surface{53}; Surface{40}; Surface{60}; Surface{55}; Surface{41}; Surface{62}; Surface{64}; Surface{57}; Surface{48}; Surface{42}; Surface{59}; Surface{63}; Surface{43}; Surface{61}; Surface{47}; Surface{44}; Surface{46}; Surface{45}; }
+}
 //+
-Physical Surface(3) = {307, 317, 292, 277, 262, 327, 232, 222, 347, 337, 322, 312, 297, 282, 267, 247, 237, 227, 357, 352, 342, 332, 302, 287, 272, 257, 252, 242};
+Rotate {{0, 0, 1}, {0, 0, -62}, Pi/2} {
+  Duplicata { Point{56}; Point{71}; Point{86}; Point{57}; Point{78}; Point{62}; Point{91}; Point{88}; Point{79}; Point{81}; Point{95}; Point{80}; Point{63}; Point{83}; Point{93}; Point{58}; Point{84}; Point{72}; Point{87}; Point{64}; Point{73}; Point{59}; Point{85}; Point{75}; Point{60}; Point{82}; Point{76}; Point{89}; Point{68}; Point{90}; Point{65}; Point{77}; Point{69}; Point{94}; Point{74}; Point{92}; Point{66}; Point{70}; Point{67}; Point{61}; Curve{88}; Curve{89}; Curve{90}; Curve{98}; Curve{137}; Curve{149}; Curve{133}; Curve{96}; Curve{95}; Curve{111}; Curve{91}; Curve{94}; Curve{134}; Curve{112}; Curve{150}; Curve{138}; Curve{101}; Curve{99}; Curve{97}; Curve{135}; Curve{119}; Curve{110}; Curve{109}; Curve{136}; Curve{92}; Curve{126}; Curve{151}; Curve{139}; Curve{127}; Curve{128}; Curve{113}; Curve{114}; Curve{102}; Curve{100}; Curve{93}; Curve{140}; Curve{121}; Curve{120}; Curve{105}; Curve{108}; Curve{129}; Curve{130}; Curve{103}; Curve{104}; Curve{132}; Curve{141}; Curve{145}; Curve{152}; Curve{115}; Curve{116}; Curve{107}; Curve{106}; Curve{142}; Curve{122}; Curve{123}; Curve{131}; Curve{144}; Curve{143}; Curve{153}; Curve{146}; Curve{117}; Curve{118}; Curve{154}; Curve{147}; Curve{125}; Curve{124}; Curve{148}; Surface{37}; Surface{49}; Surface{52}; Surface{54}; Surface{38}; Surface{50}; Surface{56}; Surface{51}; Surface{39}; Surface{58}; Surface{53}; Surface{40}; Surface{60}; Surface{55}; Surface{41}; Surface{62}; Surface{64}; Surface{57}; Surface{48}; Surface{42}; Surface{59}; Surface{63}; Surface{43}; Surface{61}; Surface{47}; Surface{44}; Surface{46}; Surface{45}; }
+}
 //+
-Physical Surface(4) = {435, 425, 450, 430, 440, 460, 455, 445, 475, 470, 465, 485, 490, 480, 505, 500, 495, 525, 515, 510, 540, 530, 520, 545, 535, 555, 550, 560};
+Rotate {{0, 0, 1}, {0, 0, -62}, Pi} {
+  Duplicata { Point{56}; Point{71}; Point{86}; Point{57}; Point{78}; Point{62}; Point{91}; Point{88}; Point{79}; Point{81}; Point{95}; Point{80}; Point{63}; Point{83}; Point{93}; Point{58}; Point{84}; Point{72}; Point{87}; Point{64}; Point{73}; Point{59}; Point{85}; Point{75}; Point{60}; Point{82}; Point{76}; Point{89}; Point{68}; Point{90}; Point{65}; Point{77}; Point{69}; Point{94}; Point{74}; Point{92}; Point{66}; Point{70}; Point{67}; Point{61}; Curve{88}; Curve{89}; Curve{90}; Curve{98}; Curve{137}; Curve{149}; Curve{133}; Curve{96}; Curve{95}; Curve{111}; Curve{91}; Curve{94}; Curve{134}; Curve{112}; Curve{150}; Curve{138}; Curve{101}; Curve{99}; Curve{97}; Curve{135}; Curve{119}; Curve{110}; Curve{109}; Curve{136}; Curve{92}; Curve{126}; Curve{151}; Curve{139}; Curve{127}; Curve{128}; Curve{113}; Curve{114}; Curve{102}; Curve{100}; Curve{93}; Curve{140}; Curve{121}; Curve{120}; Curve{105}; Curve{108}; Curve{129}; Curve{130}; Curve{103}; Curve{104}; Curve{132}; Curve{141}; Curve{145}; Curve{152}; Curve{115}; Curve{116}; Curve{107}; Curve{106}; Curve{142}; Curve{122}; Curve{123}; Curve{131}; Curve{144}; Curve{143}; Curve{153}; Curve{146}; Curve{117}; Curve{118}; Curve{154}; Curve{147}; Curve{125}; Curve{124}; Curve{148}; Surface{37}; Surface{49}; Surface{52}; Surface{54}; Surface{38}; Surface{50}; Surface{56}; Surface{51}; Surface{39}; Surface{58}; Surface{53}; Surface{40}; Surface{60}; Surface{55}; Surface{41}; Surface{62}; Surface{64}; Surface{57}; Surface{48}; Surface{42}; Surface{59}; Surface{63}; Surface{43}; Surface{61}; Surface{47}; Surface{44}; Surface{46}; Surface{45}; }
+}
+
+
+
+// Extrustion from inlet to graphite stringer top
+
+
+Extrude {0, 0, lc} {
+  Surface{37}; Surface{49}; Surface{52}; Surface{38}; Surface{50}; Surface{54}; Surface{39}; Surface{51}; Surface{56}; Surface{40}; Surface{53}; Surface{58}; Surface{41}; Surface{55}; Surface{4266}; Surface{60}; Surface{42}; Surface{4296}; Surface{57}; Surface{4256}; Surface{62}; Surface{4281}; Surface{43}; Surface{64}; Surface{59}; Surface{4306}; Surface{48}; Surface{61}; Surface{4251}; Surface{63}; Surface{47}; Surface{44}; Surface{4291}; Surface{46}; Surface{4311}; Surface{45}; Surface{4236}; Surface{4276}; Surface{4301}; Surface{4221}; Surface{4261}; Surface{4286}; Surface{4399}; Surface{4379}; Surface{4419}; Surface{4404}; Surface{4384}; Surface{4434}; Surface{4414}; Surface{4206}; Surface{4389}; Surface{4241}; Surface{4271}; Surface{4449}; Surface{4429}; Surface{4191}; Surface{4394}; Surface{4226}; Surface{4246}; Surface{4186}; Surface{4211}; Surface{4231}; Surface{4181}; Surface{4201}; Surface{4216}; Surface{4474}; Surface{4196}; Surface{4176}; Surface{4444}; Surface{4409}; Surface{4489}; Surface{4464}; Surface{4424}; Surface{4504}; Surface{4479}; Surface{4712}; Surface{4439}; Surface{4717}; Surface{4702}; Surface{4514}; Surface{4707}; Surface{4687}; Surface{4494}; Surface{4697}; Surface{4454}; Surface{4509}; Surface{4672}; Surface{4484}; Surface{4692}; Surface{4682}; Surface{4662}; Surface{4459}; Surface{4657}; Surface{4499}; Surface{4677}; Surface{4667}; Surface{4642}; Surface{4469}; Surface{4652}; Surface{4647}; Surface{4627}; Surface{4637}; Surface{4632}; Surface{4612}; Surface{4622}; Surface{4617}; Surface{4607}; Surface{4597}; Surface{4602}; Surface{4592}; Surface{4587}; Surface{4582}; 
+Layers{{22,12,7,8},{0.64,0.88,0.96,1}}; 
+Recombine;
+}
+
+
+
+
+// Extrusion of channel top to outlet
+
+
+//+
+Extrude {0, 0, hp} {
+ Surface{4739}; Surface{4761}; Surface{4783}; Surface{4849}; Surface{4915}; Surface{4981}; Surface{5069}; Surface{5179}; Surface{5245}; Surface{5311}; Surface{5399}; Surface{5377}; Surface{5333}; Surface{5267}; Surface{5135}; Surface{5025}; Surface{4959}; Surface{4893}; Surface{4827}; Surface{4805}; Surface{4871}; Surface{4937}; Surface{5003}; Surface{5091}; Surface{5223}; Surface{5421}; Surface{5509}; Surface{5465};   Layers{{1,2,2,3},{0.05,0.25,0.5,1}}; Recombine;
+}
+//+
+Extrude {0, 0, hp} {
+  Surface{6213}; Surface{6103}; Surface{6037}; Surface{5949}; Surface{5817}; Surface{5597}; Surface{5531}; Surface{5355}; Surface{5157}; Surface{5047}; Surface{5113}; Surface{5201}; Surface{5443}; Surface{5553}; Surface{5619}; Surface{5861}; Surface{5993}; Surface{6059}; Surface{6125}; Surface{6191}; Surface{6147}; Surface{6081}; Surface{6015}; Surface{5883}; Surface{5641}; Surface{5575}; Surface{5487}; Surface{5289};  Layers{{1,2,2,3},{0.05,0.25,0.5,1}}; Recombine;
+}
+//+
+Extrude {0, 0, hp} {
+  Surface{6631}; Surface{6719}; Surface{6763}; Surface{6851}; Surface{6939}; Surface{7005}; Surface{7093}; Surface{7137}; Surface{7159}; Surface{7181}; Surface{7115}; Surface{7071}; Surface{7049}; Surface{6983}; Surface{6917}; Surface{6829}; Surface{6697}; Surface{6565}; Surface{6521}; Surface{6455}; Surface{6389}; Surface{6433}; Surface{6499}; Surface{6675}; Surface{6807}; Surface{6895}; Surface{6961}; Surface{7027};  Layers{{1,2,2,3},{0.05,0.25,0.5,1}}; Recombine;
+}
+//+
+Extrude {0, 0, hp} {
+  Surface{5685}; Surface{5751}; Surface{5839}; Surface{5971}; Surface{6257}; Surface{6323}; Surface{6411}; Surface{6587}; Surface{6741}; Surface{6873}; Surface{6785}; Surface{6653}; Surface{6543}; Surface{6367}; Surface{6301}; Surface{6235}; Surface{5927}; Surface{5795}; Surface{5729}; Surface{5663}; Surface{5707}; Surface{5773}; Surface{5905}; Surface{6169}; Surface{6279}; Surface{6345}; Surface{6477}; Surface{6609};  Layers{{1,2,2,3},{0.05,0.25,0.5,1}}; Recombine;
+}
+//+
+Physical Surface("inlet1",100) = {48, 64, 62, 60, 58, 56, 54, 52, 49, 37, 38, 50, 51, 53, 55, 57, 59, 61, 63, 47, 46, 45, 44, 43, 42, 41, 40, 39};
+//+
+Physical Surface("inlet2",101) = {4266, 4256, 4251, 4236, 4221, 4206, 4191, 4186, 4181, 4176, 4196, 4201, 4211, 4226, 4241, 4261, 4276, 4291, 4281, 4296, 4306, 4311, 4301, 4286, 4271, 4246, 4231, 4216};
+//+
+Physical Surface("inlet3",102) = {4582, 4587, 4592, 4597, 4612, 4627, 4642, 4657, 4662, 4672, 4702, 4687, 4697, 4682, 4667, 4647, 4632, 4617, 4607, 4602, 4622, 4637, 4652, 4677, 4692, 4707, 4717, 4712};
+//+
+Physical Surface("inlet4",103) = {4469, 4459, 4454, 4439, 4424, 4409, 4394, 4389, 4384, 4379, 4399, 4404, 4414, 4429, 4444, 4464, 4479, 4494, 4484, 4499, 4509, 4514, 4504, 4489, 4474, 4449, 4434, 4419};
+//+
+Physical Surface("chinwall1",200) = {5302, 5390, 5456, 5500, 5412, 5214, 5082, 4994, 4928, 4862, 4796, 4738};
+//+
+Physical Surface("chinwall2",201) = {5038, 5104, 5280, 5478, 5566, 5632, 5874, 6006, 6072, 6138, 6182, 6212};
+//+
+Physical Surface("chinwall3",202) = {6622, 6446, 6380, 6424, 6490, 6666, 6798, 6886, 6952, 7018, 7180, 7106};
+//+
+Physical Surface("chinwall4",203) = {5684, 5654, 5698, 5764, 5896, 6160, 6270, 6336, 6468, 6600, 6776, 6864};
+//+
+Physical Surface("choutwall1",300) = {5306, 5240, 5174, 5064, 4976, 4910, 4848, 4774, 4760, 4726};
+//+
+Physical Surface("choutwall2",301) = {5042, 5152, 5350, 5526, 5592, 5812, 5948, 6028, 6102, 6200};
+//+
+Physical Surface("choutwall3",302) = {7168, 7158, 7128, 7092, 7000, 6934, 6846, 6758, 6714, 6626};
+//+
+Physical Surface("choutwall4",303) = {6868, 6736, 6582, 6406, 6318, 6252, 5970, 5830, 5750, 5672};
+//+
+Physical Surface("graphtop",400) = {247, 257, 262, 272, 282, 297, 312, 332, 352, 367, 362, 342, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 935, 925, 915, 910, 900, 885, 865, 840, 815, 800, 795, 805, 685, 705, 710, 695, 675, 655, 640, 625, 615, 605, 600, 590, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 30, 29, 28, 27, 26, 25, 33, 32, 31, 35, 34, 36, 940, 930, 920, 905, 890, 875, 855, 830, 790, 765, 770, 775, 895, 880, 860, 835, 825, 780, 785, 845, 870, 850, 810, 820, 730, 735, 740, 725, 690, 670, 650, 630, 620, 610, 595, 585, 635, 645, 665, 680, 720, 745, 750, 700, 660, 715, 755, 760, 417, 372, 412, 407, 357, 317, 292, 302, 322, 337, 377, 402, 242, 252, 267, 277, 287, 307, 327, 347, 382, 397, 392, 387};
+//+
+Physical Surface("plenwall1",500) = {961, 983, 7190, 7224, 7238, 7268, 7286, 7308, 7330, 7352, 7374, 7396, 1533, 1797};
+//+
+Physical Surface("plenwall2",501) = {2083, 2281, 9038, 9072, 9086, 9116, 9134, 9156, 9178, 9200, 9222, 9244, 3975, 4085};
+//+
+Physical Surface("plenwall3",502) = {3007, 2633, 7806, 7840, 7854, 7884, 7902, 7924, 7946, 7968, 7990, 8012, 1071, 1005};
+//+
+Physical Surface("plenwall4",503) = {3249, 3469, 8430, 8452, 8474, 8496, 8518, 8540, 8566, 8580, 8610, 8620, 4063, 4107};
+//+
+Physical Surface("outlet",600) = {962, 984, 7203, 7225, 7247, 7269, 7291, 7313, 7335, 7357, 7379, 7401, 1534, 1798, 1886, 1666, 7423, 7445, 7467, 7489, 7511, 7533, 7555, 7577, 7599, 7621, 1050, 1028, 1116, 1182, 1270, 7643, 7665, 7687, 7709, 7731, 7753, 7775, 7797, 1710, 1974, 1688, 1578, 1424, 1358, 1160, 1248, 1336, 1402, 1556, 1732, 1908, 2040, 1864, 1820, 1600, 1490, 1380, 1622, 1952, 2172, 2260, 1996, 2392, 2084, 2282, 9051, 9073, 9095, 9117, 9139, 9161, 9183, 9205, 9227, 9249, 3976, 4086, 3998, 3932, 9271, 9293, 9315, 9337, 9359, 9381, 9403, 9425, 9447, 9469, 2238, 2062, 2106, 2304, 9491, 2436, 9513, 2766, 9535, 3030, 9557, 3426, 9579, 3668, 9601, 3778, 9623, 3844, 9645, 2326, 2612, 2986, 3338, 3624, 3756, 3866, 2348, 2546, 2832, 3140, 3382, 3646, 3404, 2876, 2480, 2590, 3096, 2744, 1006, 1094, 1226, 1314, 1468, 1776, 2150, 2502, 2810, 3206, 3536, 3690, 3822, 3910, 4042, 4108, 4064, 4020, 3954, 3888, 3734, 3580, 3514, 3184, 2920, 2568, 2216, 1930, 1644, 1512, 1292, 1204, 1138, 1072, 8017, 8039, 8413, 8391, 7995, 8061, 8083, 7973, 7951, 8105, 8369, 1446, 1842, 1754, 8347, 8127, 7929, 7907, 8149, 8325, 2018, 2128, 2194, 2678, 2414, 2458, 2370, 8303, 8171, 7885, 7863, 8193, 8281, 2524, 2722, 2788, 2898, 2942, 3118, 3272, 2656, 8259, 8215, 7841, 7819, 8237, 2700, 2634, 2854, 2964, 3008, 3250, 3162, 3052, 3074, 3228, 3492, 3602, 3470, 3360, 3316, 3294, 3448, 3558, 3712, 3800, 8435, 8853, 8875, 8897, 8919, 8941, 8963, 8985, 9007, 9029, 8655, 8633, 8611, 8677, 8589, 8699, 8567, 8721, 8545, 8743, 8523, 8765, 8501, 8787, 8479, 8809, 8457, 8831};
+//+
+Physical Volume("fluid",2) = {129, 128, 132, 273, 130, 131, 73, 274, 142, 262, 261, 275, 263, 264, 260, 259, 265, 266, 258, 257, 267, 144, 143, 272, 268, 141, 140, 139, 269, 138, 137, 270, 136, 135, 134, 271, 133, 86, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 100, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 36, 113, 126, 125, 124, 123, 122, 121, 120, 119, 118, 117, 116, 115, 114, 127, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101, 334, 345, 344, 343, 342, 341, 340, 339, 338, 337, 336, 335, 346, 333, 332, 331, 330, 329, 328, 327, 326, 325, 324, 323, 357, 368, 367, 366, 365, 364, 363, 362, 361, 360, 359, 358, 322, 356, 355, 354, 353, 352, 351, 350, 349, 348, 347, 287, 298, 297, 296, 295, 294, 293, 292, 291, 290, 289, 288, 299, 286, 285, 284, 283, 282, 281, 280, 279, 278, 277, 310, 321, 320, 319, 318, 317, 316, 315, 314, 313, 312, 311, 276, 309, 308, 307, 306, 305, 304, 303, 302, 301, 300, 8, 27, 40, 41, 42, 26, 43, 44, 25, 45, 39, 9, 46, 47, 24, 48, 10, 49, 51, 23, 28, 6, 5, 4, 31, 30, 32, 33, 29, 3, 50, 2, 34, 35, 72, 7, 37, 1, 38, 67, 60, 61, 19, 13, 63, 64, 65, 18, 66, 62, 17, 68, 69, 16, 70, 71, 14, 15, 59, 54, 11, 21, 55, 20, 56, 57, 53, 58, 52, 22, 12, 221, 229, 148, 222, 223, 147, 224, 225, 146, 226, 155, 145, 228, 153, 149, 220, 219, 150, 151, 218, 217, 216, 215, 152, 214, 213, 212, 227, 243, 256, 255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 230, 242, 241, 240, 239, 238, 237, 236, 235, 234, 233, 232, 231, 184, 175, 176, 177, 178, 179, 211, 181, 182, 183, 174, 185, 186, 187, 188, 189, 190, 191, 192, 165, 156, 157, 158, 159, 160, 161, 162, 163, 164, 180, 166, 167, 168, 169, 170, 171, 172, 173, 205, 200, 201, 206, 199, 198, 197, 202, 196, 203, 207, 195, 194, 208, 204, 210, 154, 209, 193};
