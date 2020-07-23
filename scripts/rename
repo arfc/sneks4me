@@ -1,8 +1,8 @@
 #!/bin/bash
-# script to rename nek output files
+# script to rename nek output files from a restarted run
+# place script where casefiles <casename>.f12345 are
 # run ./rename <arg>, where <arg> is the increment in the
-# file numbers
-files=$PWD/*.f*
+# file numbers to make file numbers consistent chronologically
 
 for i in *.f*; 
 do
@@ -19,17 +19,3 @@ do
   new="${fname}.f${str}"
   mv $i $new
 done
-
-# for i in *.f* ; do
-#  NUM=$(echo "$i" | tr -dc '0-9')
-#  NUM=$(echo "$NUM+0" | bc)
-#  str="$NUM"
-  # echo "STR:$str"
-#  old="${fname}.f${str}"
-  # echo "NEWSTR:$str"
-  new2="${fname}.f${str}"
-  # echo "OLD:$old"
-  # echo "NEW:$new2"
-#  echo "$new2"
-#  mv $old $new2
-#done
