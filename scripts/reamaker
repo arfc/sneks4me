@@ -6,6 +6,17 @@
 # top and bottom of any 3D rea file from examples
 src=$PWD
 cd $1
+
+lineno=0
+bcstr="BOUNDARY CONDITIONS"
+while IFS= read -r line; do
+    lineno=lineno+1
+    if [[ "$line" == *"$bcstr"* ]]
+	    sed -i "$lineno,/end/s/P/ " newrea.out
+	    break
+    fi
+done < newrea.out
+
 op=$2".rea"
 rm $op
 touch $op
