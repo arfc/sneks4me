@@ -13,7 +13,7 @@ while IFS= read -r line; do
     lineno=lineno+1
     if [[ "$line" == *"$bcstr"* ]]
     then
-	    sed -i "$lineno,/end/s/P/\s/g" newrea.out
+	    sed -i "$lineno ,/end/s/P/\s/g" newrea.out
 	    break
     fi
 done < newrea.out
