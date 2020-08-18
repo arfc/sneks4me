@@ -238,6 +238,8 @@ c      implicit none
       dz = 0.5
       ubar = 1.0
       tbar(1) = 0.0
+
+c Sets recycle BC
        
       if(istep.eq.0)then
         call copy(uin,vx,ntot)
