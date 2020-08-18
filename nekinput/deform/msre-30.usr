@@ -1,0 +1,394 @@
+c-----------------------------------------------------------------------
+c  nek5000 user-file template
+c
+c  user specified routines:
+c     - uservp  : variable properties
+c     - userf   : local acceleration term for fluid
+c     - userq   : local source term for scalars
+c     - userbc  : boundary conditions
+c     - useric  : initial conditions
+c     - userchk : general purpose routine for checking errors etc.
+c     - userqtl : thermal divergence for lowMach number flows 
+c     - usrdat  : modify element vertices 
+c     - usrdat2 : modify mesh coordinates
+c     - usrdat3 : general purpose routine for initialization
+c     
+c-----------------------------------------------------------------------
+      include "/homes/dshaver/NEKSOURCE/usrcode/limits.f"
+      include "/homes/dshaver/NEKSOURCE/usrcode/utilities.f"
+      include "/homes/dshaver/NEKSOURCE/usrcode/recycle.f"
+c-----------------------------------------------------------------------
+      subroutine uservp(ix,iy,iz,eg) ! set variable properties
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+     
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+      e = gllel(eg)
+
+      cond_graphite = 13 ! "conservative" value from TM 3229
+      cond_salt = 0.83 ! TM 3229
+      k_ratio = cond_graphite/cond_salt
+
+      udiff  = cpfld(ifield,1)
+      utrans = cpfld(ifield,2)
+      if(eg.gt.nelgv) then
+        udiff = cpfld(ifield,1)*k_ratio
+        utrans = 0.1
+      endif
+      
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userf(ix,iy,iz,eg) ! set acceleration term
+c
+c     Note: this is an acceleration term, NOT a force!
+c     Thus, ffx will subsequently be multiplied by rho(x,t).
+c
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      integer e
+      e = gllel(eg)
+      
+
+      g=9.8
+      usq=uav*uav
+      rhoin=2266.93334
+      a=0.6
+      rhot=2811.82334
+      Tin=908.15
+    
+      templ=t(ix,iy,iz,e,1)
+      
+      comp=a*templ/(rhot-a*(templ+Tin))
+      comp=1.0-comp
+      comp=1.0/comp      
+
+      ffx = 0.0
+      ffy = 0.0
+      ffz = g*dhsi*comp/usq/rhoin
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userq(ix,iy,iz,eg) ! set source term
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+      logical idid
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      real zhat,eps,rhos,cps
+      real qscalef,qscaleg,mq,cq,qf,qs
+
+c      e = gllel(eg)
+
+      rhos=2258.6 ! fuel salt density, SI units
+      cps=1966.48 ! fuel salt cp, SI units
+c     dT=1.0
+      qscalef=20000000.0 ! fuel salt mean source term value
+      qscaleg=623000.0 ! graphite mean source term
+
+      eps=0.01 ! yields a peak value of 31 W/cc in fuel salt
+
+      zbar=(z-zc1)/(zc2-zc1) ! for sinusoidal source in channel
+      mq=eps/(zc2-zc3) ! for linear source in plenum
+      cq=eps*zc3/(zc3-zc2) ! for linear source in plenum
+
+      qf=(mq*(zc3+zc2)/2.0)+cq+eps+(2.0/pi) ! calculated to make avg in fuel=1
+      qf=1.0/qf
+      qg=pi/2.0 ! makes source avg in graphite one
+      qg=qg*qscaleg
+      qf=qscalef*qf
+
+      qf=qf*dhsi/(rhos*cps*uav) ! non-dimensionalize source amplitude
+      qg=qg*dhsi/(rhos*cps*uav)
+
+      qvol = qf * (sin(pi*zbar)+eps) ! sinusoid for channel
+      if (z.gt.z2) qvol = qf*((mq*z)+cq)  ! linear for plenum
+      if (eg.gt.nelgv) qvol = qg*sin(pi*zbar) ! graphite source
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userbc(ix,iy,iz,iside,eg) ! set up boundary conditions
+c
+c     NOTE ::: This subroutine MAY NOT be called by every process
+c
+c      implicit none
+      integer ix,iy,iz,iside,eg
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+      logical iffield
+      common /lvelbc/ iffield(ldimt)
+      common /cvelbc/ uin(lx1,ly1,lz1,lelv)
+     $              , vin(lx1,ly1,lz1,lelv)
+     $              , win(lx1,ly1,lz1,lelv)
+     $              , tin(lx1,ly1,lz1,lelt,ldimt)
+      e = gllel(eg)
+      ux   = uin(ix,iy,iz,e)
+      uy   = vin(ix,iy,iz,e)
+      uz   = win(ix,iy,iz,e)
+      if(iffield(ifield-1)) temp=tin(ix,iy,iz,e,ifield-1)
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine useric(ix,iy,iz,eg) ! set up initial conditions
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+c      logical idid
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      real zhat
+
+      ux   = 0.0
+      uy   = 0.0
+      uz   = 1.0
+      if (eg.gt.nelgv) uz = 0.0
+
+      temp = 0.0
+      zhat = (z-zc1)/(zc3-zc1)
+      write(*,*) zc1,zc3,zhat
+      if(eg.le.nelgv) temp = 0.5*(1.0-cos(pi*zhat))
+
+      return
+      end
+c-----------------------------------------------------------------------
+
+      subroutine userchk()
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      real tbar(ldimt)
+      real wd
+      common /walldist/ wd(lx1,ly1,lz1,lelt)
+      common /lvelbc/ iffield(ldimt)
+      common /cvelbc/ uin(lx1,ly1,lz1,lelv)
+     $              , vin(lx1,ly1,lz1,lelv)
+     $              , win(lx1,ly1,lz1,lelv)
+     $              , tin(lx1,ly1,lz1,lelt,ldimt)
+      
+      parameter(lt=lx1*ly1*lz1*lelt)
+      common /myoutflow/ d(lt),w1(lt)      
+      
+c      call average_files('avgmsre',27)
+
+c      test code to set temp=1 in solid
+c      call rzero(t,lx1*ly1*lz1*nelt)
+c      do ie=1,nelt
+c        ig=lglel(ie)
+c        if(ig.gt.nelgv) call rone(t(1,1,1,ie,1),lx1*ly1*lz1)
+c      enddo
+
+      ratio = 1.5
+      uturb = 0
+      ntot = nx1*ny1*nz1*nelt
+
+   
+      dx = 0.0
+      dy = 0.0
+      dz = 0.5
+      ubar = 1.0
+      tbar(1) = 0.0
+       
+      if(istep.eq.0)then
+        call copy(uin,vx,ntot)
+        call copy(vin,vy,ntot)
+        call copy(win,vz,ntot)
+        call copy(tin,t,ntot)
+      endif
+      if(time.le.1.0) call set_inflow_fpt(dx,dy,dz,ubar,tbar)
+
+
+      call print_limits
+      call y_p_limits(wd,.true.)
+
+      call turb_outflow(d,w1,ratio,uturb)
+      call walltime(3.5*3600)
+
+      if( time.ge.112) call avg_all()
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userqtl ! Set thermal divergence
+
+      call userqtl_scig 
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat()   ! This routine to modify element vertices
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+      
+      logical iffield
+      common /lvelbc/ iffield(ldimt)
+      
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+
+      iffield(1)=.false.
+      
+      dh=0.624
+      dhsi=0.0158496
+      zc1=-62.0/dh
+      zc2=1.0/dh
+      zc3=8.0/dh
+      uav=0.2194
+      return
+      
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat2()  ! This routine to modify mesh coordinates
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      ntot = nx1*ny1*nz1*nelt
+
+      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
+      height = sqrt(3.0)  
+
+      theta = pi/4.0
+      c = cos(theta)
+      s = sin(theta)
+
+      do i=1,ntot
+         x=xm1(i,1,1,1)
+         y=ym1(i,1,1,1)
+         xm1(i,1,1,1) = c*x - s*y
+         ym1(i,1,1,1) = s*x + c*y
+      enddo
+
+      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
+      do i=1,ntot
+         x=abs(xm1(i,1,1,1)/xmax)
+         y=abs(ym1(i,1,1,1)/ymax)
+         z=zm1(i,1,1,1)
+         Lg=63.0
+         Lp=7.0
+         zt=1.0  !tip location
+         if (z.gt.zt) then
+            zm1(i,1,1,1) = zm1(i,1,1,1)-height*(x+y)*(zmax-z)/Lp
+         else
+            zm1(i,1,1,1) = zm1(i,1,1,1)-height*(x+y)*(z-zmin)/Lg
+         endif
+      enddo
+      do i=1,ntot
+         x=xm1(i,1,1,1)
+         y=ym1(i,1,1,1)
+         xm1(i,1,1,1) =  c*x + s*y
+         ym1(i,1,1,1) = -s*x + c*y
+      enddo
+      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
+
+c      call outpost(xm1,ym1,zm1,pr,t,'   ')
+
+
+      call cmult(xm1,1./dh,ntot)    
+      call cmult(ym1,1./dh,ntot)
+      call cmult(zm1,1./dh,ntot)
+
+      do iel = 1,nelt
+         do ifc = 1,2*ndim
+             id_face2= bc(5,ifc,iel,2)
+             if(id_face2.eq.100) then
+                 cbc(ifc,iel,1)='v  '
+                 cbc(ifc,iel,2)='t  '
+             elseif(id_face2.eq.101) then
+                 cbc(ifc,iel,1)='v  '
+                 cbc(ifc,iel,2)='t  '
+             elseif(id_face2.eq.102) then
+                 cbc(ifc,iel,1)='v  '
+                 cbc(ifc,iel,2)='t  '
+             elseif(id_face2.eq.103) then
+                 cbc(ifc,iel,1)='v  '
+                 cbc(ifc,iel,2)='t  '
+             elseif(id_face2.eq.200) then
+                 cbc(ifc,iel,1)='W  '
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.201) then
+                 cbc(ifc,iel,1)='W  '
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.202) then
+                 cbc(ifc,iel,1)='W  '
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.203) then
+                 cbc(ifc,iel,1)='W  '
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.400) then
+                 cbc(ifc,iel,1)='W  '
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.600) then
+                 cbc(ifc,iel,1)='O  '
+                 cbc(ifc,iel,2)='O  '
+             elseif(id_face2.eq.10) then
+                 cbc(ifc,iel,2)='I  '
+             elseif(id_face2.eq.11) then
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.20) then
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.21) then
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.22) then
+                 cbc(ifc,iel,2)='E  '
+             elseif(id_face2.eq.23) then
+                 cbc(ifc,iel,2)='E  '
+             endif
+         enddo
+      enddo
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat3()
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      real wd
+      common /walldist/ wd(lx1,ly1,lz1,lelt)
+
+      call get_wall_distance(wd,1)
+      
+      return
+      end
+c-----------------------------------------------------------------------
