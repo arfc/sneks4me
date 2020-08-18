@@ -2,21 +2,25 @@
 #shopt -s extglob
 # arg 1 - working dir where newrea.out lives
 # arg 2 - output rea name
+# arg 3 - 1 if you want periodic BCs replaced
 # script needs toprea and botrea files in folder "chtsetup-files" - basically 
 # top and bottom of any 3D rea file from examples
 src=$PWD
 cd $1
-
-lineno=0
-bcstr="BOUNDARY CONDITIONS"
-while IFS= read -r line; do
-    lineno=$((lineno+1))
-    if [[ "$line" == *"$bcstr"* ]]
-    then
+if [[ $3 == 1 ]]
+then
+    lineno=0
+    #bcstr="BOUNDARY CONDITIONS" #select if you want to replace periodic BCs in velocity field
+    bcstr="*****    THERMAL BOUNDARY CONDITIONS" #select if you want to replace periodic BCs in temp field
+    while IFS= read -r line; do
+        lineno=$((lineno+1))
+        if [[ "$line" == *"$bcstr"* ]]
+        then
 	    sed -i "$lineno ,/end/s/P/ /g" newrea.out
 	    break
-    fi
-done < newrea.out
+        fi
+    done < newrea.out
+fi
 
 op=$2".rea"
 rm $op
