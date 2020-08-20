@@ -1,16 +1,26 @@
 #!/bin/bash
 #shopt -s extglob
-# ARG 1 - input file with gmsh2nek instructions
+# ARG 1 - path to input file with gmsh2nek instructions
 # file must have line-by-line input in the order expected by gmsh2nek
 # i.e. mesh dimensions, msh name... run gmsh2nek for more details
-
 ipfile=$1
+ippath="${ipfile%\/*}"
+cd $ippath
 readarray -t lines < $1 # read lines from text file
-
-gmsh ${lines[1]}".geo" -3 -order 2 -o ${lines[1]}".msh" -format msh22
-
-for line in "${lines[@]}"
+fnames=("${lines[@]:0:2}")
+cmds=("${lines[@]:2}")
+#echo "FILES:"
+for line in "${fnames[@]}"
 do
   echo "$line"
-done | gmsh2nek
+  gmsh $line".geo" -3 -order 2 -o $line".msh" -format msh22
+done
+#echo "CMDS:"
+#gmsh ${fnames[0]}".geo" -3 -order 2 -o ${fnames[0]}".msh" -format msh22
+#gmsh ${fnames[1]}".geo" -3 -order 2 -o ${fnames[1]}".msh" -format msh22
+
+for line in "${cmds[@]}"
+do
+  echo "$line"
+done  | gmsh2nek
 
