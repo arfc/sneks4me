@@ -1,0 +1,355 @@
+c-----------------------------------------------------------------------
+c  nek5000 user-file template
+c
+c  user specified routines:
+c     - uservp  : variable properties
+c     - userf   : local acceleration term for fluid
+c     - userq   : local source term for scalars
+c     - userbc  : boundary conditions
+c     - useric  : initial conditions
+c     - userchk : general purpose routine for checking errors etc.
+c     - userqtl : thermal divergence for lowMach number flows 
+c     - usrdat  : modify element vertices 
+c     - usrdat2 : modify mesh coordinates
+c     - usrdat3 : general purpose routine for initialization
+c     
+c-----------------------------------------------------------------------
+      include "~/wrkdir/usrcode/limits.f"
+      include "~/wrkdir/usrcode/utilities.f"
+      include "~/wrkdir/usrcode/recycle.f"
+c-----------------------------------------------------------------------
+      subroutine uservp(ix,iy,iz,eg) ! set variable properties
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+     
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+      e = gllel(eg)
+
+      cond_graphite = 13 ! "conservative" value from TM 3229
+      cond_salt = 0.83 ! TM 3229
+      k_ratio = cond_graphite/cond_salt
+
+      udiff  = cpfld(ifield,1)
+      utrans = cpfld(ifield,2)
+      if(eg.gt.nelgv) then
+        udiff = cpfld(ifield,1)*k_ratio
+        utrans = 0.1
+      endif
+      
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userf(ix,iy,iz,eg) ! set acceleration term
+c
+c     Note: this is an acceleration term, NOT a force!
+c     Thus, ffx will subsequently be multiplied by rho(x,t).
+c
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      integer e
+      e = gllel(eg)
+      
+
+      g=9.8
+c      dhsi=0.015845536
+c      usq=0.2194568086
+      usq=uav*uav
+      rhoin=2266.93334
+      a=0.6
+      rhot=2811.82334
+      Tin=908.15
+    
+      templ=t(ix,iy,iz,e,1)
+      
+      comp=a*templ/(rhot-a*(templ+Tin))
+      comp=1.0-comp
+      comp=1.0/comp      
+
+      ffx = 0.0
+      ffy = 0.0
+      ffz = g*dhsi*comp/usq/rhoin
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userq(ix,iy,iz,eg) ! set source term
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+      logical idid
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      real zhat,eps,rhos,cps
+      real qscalef,qscaleg,mq,cq,qf,qs
+
+c      data idid /.false./
+c      save idid,zcord1
+
+c      e = gllel(eg)
+
+c      dh=0.6241 ! hydraulic dia in inches
+c      dhsi=0.015846 ! hyd dia in m
+      rhos=2258.6 ! fuel salt density, SI units
+      cps=1966.48 ! fuel salt cp, SI units
+c      uav=0.219457 ! fuel salt mean channel velocity(Re=1000), SI units
+c     dT=1.0
+      qscalef=20000000.0 ! fuel salt mean source term value
+      qscaleg=623000.0 ! graphite mean source term
+
+c      zcord2=1.0/dh ! top of graphite stringer
+c      zcord3=8.0/dh ! top of plenum
+c      ntot=lx1*ly1*lz1*nelt
+c      if(.not.idid) then
+c        zcord1=glmin(zm1,ntot)
+c        idid=.true.
+c      endif
+c      zcord1=-62.0/dh
+      eps=0.01 ! yields a peak value of 31 W/cc in fuel salt
+
+      zbar=(z-zc1)/(zc2-zc1) ! for sinusoidal source in channel
+      mq=eps/(zc2-zc3) ! for linear source in plenum
+      cq=eps*zc3/(zc3-zc2) ! for linear source in plenum
+
+      qf=(mq*(zc3+zc2)/2.0)+cq+eps+(2.0/pi) ! calculated to make avg in fuel=1
+      qf=1.0/qf
+      qg=pi/2.0 ! makes source avg in graphite one
+      qg=qg*qscaleg
+      qf=qscalef*qf
+
+      qf=qf*dhsi/(rhos*cps*uav) ! non-dimensionalize source amplitude
+      qg=qg*dhsi/(rhos*cps*uav)
+
+      qvol = qf * (sin(pi*zbar)+eps) ! sinusoid for channel
+      if (z.gt.z2) qvol = qf*((mq*z)+cq)  ! linear for plenum
+      if (eg.gt.nelgv) qvol = qg*sin(pi*zbar) ! graphite source
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userbc(ix,iy,iz,iside,eg) ! set up boundary conditions
+c
+c     NOTE ::: This subroutine MAY NOT be called by every process
+c
+c      implicit none
+      integer ix,iy,iz,iside,eg
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+      logical iffield
+      common /lvelbc/ iffield(ldimt)
+      common /cvelbc/ uin(lx1,ly1,lz1,lelv)
+     $              , vin(lx1,ly1,lz1,lelv)
+     $              , win(lx1,ly1,lz1,lelv)
+     $              , tin(lx1,ly1,lz1,lelt,ldimt)
+      e = gllel(eg)
+      ux   = uin(ix,iy,iz,e)
+      uy   = vin(ix,iy,iz,e)
+      uz   = win(ix,iy,iz,e)
+      if(iffield(ifield-1)) temp=tin(ix,iy,iz,e,ifield-1)
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine useric(ix,iy,iz,eg) ! set up initial conditions
+
+c      implicit none
+
+      integer ix,iy,iz,eg
+
+      include 'SIZE'
+      include 'TOTAL'
+      include 'NEKUSE'
+
+      integer e
+c      logical idid
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      real zhat
+c      data idid /.false./
+c      save idid,zmin
+
+c      ntot=lx1*ly1*lz1*nelt
+c      if(.not.idid) then
+c        zmin=glmin(zm1,ntot)
+c        idid=.true.
+c      endif
+c      zmax=1.0/0.6241 !top of the graphite
+
+
+c      eps = 0.05
+
+      ux   = 0.0
+      uy   = 0.0
+      uz   = 1.0
+      if (eg.gt.nelgv) uz = 0.0
+
+      temp = 0.0
+      zhat = (z-zc1)/(zc3-zc1)
+      write(*,*) zc1,zc3,zhat
+      if(eg.le.nelgv) temp = 0.5*(1.0-cos(pi*zhat))
+
+      
+      return
+      end
+c-----------------------------------------------------------------------
+
+      subroutine userchk()
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      integer e, eg
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      common /htavgs/ locmap(lelt) ! map for region of interest
+     $              , havp(lx1,ly1,lz1,lelt,ldimt)
+     $              , havch(lx1,ly1,lz1,lelt,ldimt)
+     $              , tsp(lx1,ly1,lz1,lelt,ldimt)
+     $              , tgp(lx1,ly1,lz1,lelt,ldimt)
+     $              , tgch(lx1,ly1,lz1,lelt,ldimt)
+     $              , tsch(lx1,ly1,lz1,lelt,ldimt)
+     $              , tavg(lx1,ly1,lz1,lelt,ldimt)
+     $              , tgrad(lx1,ly1,lz1,lelt,ldimt)
+     $              , dx(lx1,ly1,lz1,lelt,ldimt)  ! may not need this - calculate directly?
+
+c focus on one half channel, associated quarter of graphite
+c store location of graphite in channel, graphite tip, channel fluid, plenum fluid in an array
+    
+       ntot=nx1*ny1*nz1*nelt
+
+       call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
+
+       zgtop=0.95*zc2 ! top surface marker for graphite - for axial heat transfer
+       zptop=3.0/dh ! highest point of plenum that we care about
+
+       do i=1,ntot
+c         xx = xm1(i,1,1,1)
+c         yy = ym1(i,1,1,1)
+c         zz = zm1(i,1,1,1)
+c         ie = gllel(eg)
+         
+         get_elem_m1centroid(x,y,z,ie)
+
+         loc1=xmax*y-ymax*x                            ! line from origin to top right corner of mesh
+         loc2=xmax*y-ymin*x                            ! line from origin to bottom right corner
+
+         if (loc1.le.0) .and. (loc2.ge.0)             ! focusing on right half channel plus associated graphite
+           if (eg.le.nelgv) .and. (z.le.zgtop)                       ! if in-channel salt
+             locmap(i)=1
+           elseif (eg.gt.nelgv) .and. (z.le.zgtop)                    ! in-channel graphite
+             locmap(i)=2
+           elseif (eg.le.nelgv) .and. (z.gt.zgtop) .and. (z.le.zptop) !in plenum salt upto say z=3
+             locmap(i)=3
+           elseif (eg.gt.nelgv) .and. (z.gt.zgtop) .and (z.le.zc2) !stringer tip from z=0 to zc2
+             locmap(i)=4
+           else                                                    ! not in ROI
+             locmap(i)=0                                     ! go away  
+           endif
+         else                                                      ! if not in quadrant of interest
+           locmap(i)=0                                       ! get lost 
+         endif
+       enddo
+
+c use planar average routine plane_ave_m1 to store average temp of graphite 
+c and channel fluid at different z values.
+c calculate dT/dx using nek's gradient routine. also pass to planar avg.
+c graphite avg temp-fuel av temp, dx=centre-line temp
+        
+
+
+c for the top, use the entire top surface of stringer, and congruent/coincident volume in plenum
+      
+      
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine userqtl ! Set thermal divergence
+
+      call userqtl_scig 
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat()   ! This routine to modify element vertices
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+      
+      logical iffield
+      common /lvelbc/ iffield(ldimt)
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+
+      iffield(1)=.false.
+
+      dh=0.624
+      dhsi=0.0158496
+      zc1=-62.0/dh
+      zc2=1.0/dh
+      zc3=8.0/dh
+      uav=0.2194
+      return
+     
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat2()  ! This routine to modify mesh coordinates
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+c      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+c      ntot = nx1*ny1*nz1*nelt
+
+c      call cmult(xm1,1./dh,ntot)
+c      call cmult(ym1,1./dh,ntot)
+c      call cmult(zm1,1./dh,ntot)
+
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine usrdat3()
+
+c      implicit none
+
+      include 'SIZE'
+      include 'TOTAL'
+
+      real wd
+      common /walldist/ wd(lx1,ly1,lz1,lelt)
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+
+
+      dh=0.624
+      dhsi=0.0158496
+      zc1=-62.0/dh
+      zc2=1.0/dh
+      zc3=8.0/dh
+      uav=0.2194
+
+      call get_wall_distance(wd,1)
+      
+      return
+      end
+c-----------------------------------------------------------------------
