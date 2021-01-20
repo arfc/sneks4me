@@ -14,9 +14,9 @@ c     - usrdat2 : modify mesh coordinates
 c     - usrdat3 : general purpose routine for initialization
 c     
 c-----------------------------------------------------------------------
-      include "~/wrkdir/usrcode/limits.f"
-      include "~/wrkdir/usrcode/utilities.f"
-      include "~/wrkdir/usrcode/recycle.f"
+      include "/home/achaube/wrkdir/usrcode/limits.f"
+      include "/home/achaube/wrkdir/usrcode/utilities.f"
+      include "/home/achaube/wrkdir/usrcode/recycle.f"
 c-----------------------------------------------------------------------
       subroutine uservp(ix,iy,iz,eg) ! set variable properties
 
@@ -102,28 +102,11 @@ c      implicit none
       real zhat,eps,rhos,cps
       real qscalef,qscaleg,mq,cq,qf,qs
 
-c      data idid /.false./
-c      save idid,zcord1
-
-c      e = gllel(eg)
-
-c      dh=0.6241 ! hydraulic dia in inches
-c      dhsi=0.015846 ! hyd dia in m
       rhos=2258.6 ! fuel salt density, SI units
       cps=1966.48 ! fuel salt cp, SI units
-c      uav=0.219457 ! fuel salt mean channel velocity(Re=1000), SI units
-c     dT=1.0
       qscalef=20000000.0 ! fuel salt mean source term value
       qscaleg=623000.0 ! graphite mean source term
 
-c      zcord2=1.0/dh ! top of graphite stringer
-c      zcord3=8.0/dh ! top of plenum
-c      ntot=lx1*ly1*lz1*nelt
-c      if(.not.idid) then
-c        zcord1=glmin(zm1,ntot)
-c        idid=.true.
-c      endif
-c      zcord1=-62.0/dh
       eps=0.01 ! yields a peak value of 31 W/cc in fuel salt
 
       zbar=(z-zc1)/(zc2-zc1) ! for sinusoidal source in channel
@@ -219,6 +202,7 @@ c      implicit none
       include 'TOTAL'
 
       integer e, eg
+      real x,y,z
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
       common /htavgs/ locmap(lelt) ! map for region of interest
      $              , havp(lx1,ly1,lz1,lelt,ldimt)
@@ -231,8 +215,8 @@ c      implicit none
      $              , tgrad(lx1,ly1,lz1,lelt,ldimt)
      $              , dx(lx1,ly1,lz1,lelt,ldimt)  ! may not need this - calculate directly?
 
-c focus on one half channel, associated quarter of graphite
-c store location of graphite in channel, graphite tip, channel fluid, plenum fluid in an array
+c focus on entire channel
+c store location of graphite in channel, graphite tip, channel fluid, plenum fluid in locmap
     
        ntot=nx1*ny1*nz1*nelt
 
@@ -241,34 +225,25 @@ c store location of graphite in channel, graphite tip, channel fluid, plenum flu
        zgtop=0.95*zc2 ! top surface marker for graphite - for axial heat transfer
        zptop=3.0/dh ! highest point of plenum that we care about
 
-       do i=1,ntot
-c         xx = xm1(i,1,1,1)
-c         yy = ym1(i,1,1,1)
-c         zz = zm1(i,1,1,1)
-c         ie = gllel(eg)
+       do eg=1,ntot
+          ie = gllel(eg)
          
-         get_elem_m1centroid(x,y,z,ie)
+          call get_elem_m1centroid(x,y,z,ie)
 
-         loc1=xmax*y-ymax*x                            ! line from origin to top right corner of mesh
-         loc2=xmax*y-ymin*x                            ! line from origin to bottom right corner
-
-         if (loc1.le.0) .and. (loc2.ge.0)             ! focusing on right half channel plus associated graphite
-           if (eg.le.nelgv) .and. (z.le.zgtop)                       ! if in-channel salt
+          if ((eg .le. nelgv) .and. (z .le. zgtop)) then                       ! if in-channel salt
              locmap(i)=1
-           elseif (eg.gt.nelgv) .and. (z.le.zgtop)                    ! in-channel graphite
+          else if ((eg.gt.nelgv) .and. (z.le.zgtop)) then                    ! in-channel graphite
              locmap(i)=2
-           elseif (eg.le.nelgv) .and. (z.gt.zgtop) .and. (z.le.zptop) !in plenum salt upto say z=3
+          else if ((eg.le.nelgv) .and. (z.gt.zgtop) .and. (z.le.zptop)) then !in plenum salt upto say z=3
              locmap(i)=3
-           elseif (eg.gt.nelgv) .and. (z.gt.zgtop) .and (z.le.zc2) !stringer tip from z=0 to zc2
+          else if ((eg.gt.nelgv) .and. (z.gt.zgtop) .and (z.le.zc2)) then !stringer tip from z=0 to zc2
              locmap(i)=4
-           else                                                    ! not in ROI
+          else                                                    ! not in ROI
              locmap(i)=0                                     ! go away  
-           endif
-         else                                                      ! if not in quadrant of interest
-           locmap(i)=0                                       ! get lost 
-         endif
-       enddo
-
+          end if
+       end do
+      
+      call outpost(vx,vy,locmap,pr,tz,'foo')
 c use planar average routine plane_ave_m1 to store average temp of graphite 
 c and channel fluid at different z values.
 c calculate dT/dx using nek's gradient routine. also pass to planar avg.
