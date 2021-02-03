@@ -14,9 +14,9 @@ c     - usrdat2 : modify mesh coordinates
 c     - usrdat3 : general purpose routine for initialization
 c     
 c-----------------------------------------------------------------------
-      include "/u/sciteam/chaube/usrcode/limits.f"
-      include "/u/sciteam/chaube/usrcode/utilities.f"
-      include "/u/sciteam/chaube/usrcode/recycle.f"
+      include "/home/achaube/usrcode/limits.f"
+      include "/home/achaube/usrcode/utilities.f"
+      include "/home/achaube/usrcode/recycle.f"
 c-----------------------------------------------------------------------
       subroutine uservp(ix,iy,iz,eg) ! set variable properties
 
@@ -62,7 +62,6 @@ c      implicit none
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
       integer e
       e = gllel(eg)
-      
 
       g=9.8
       usq=uav*uav
@@ -135,21 +134,7 @@ c
 c     NOTE ::: This subroutine MAY NOT be called by every process
 c
 c      implicit none
-      integer ix,iy,iz,iside,eg
-      include 'SIZE'
-      include 'TOTAL'
-      include 'NEKUSE'
-      logical iffield
-      common /lvelbc/ iffield(ldimt)
-      common /cvelbc/ uin(lx1,ly1,lz1,lelv)
-     $              , vin(lx1,ly1,lz1,lelv)
-     $              , win(lx1,ly1,lz1,lelv)
-     $              , tin(lx1,ly1,lz1,lelt,ldimt)
-      e = gllel(eg)
-      ux   = uin(ix,iy,iz,e)
-      uy   = vin(ix,iy,iz,e)
-      uz   = win(ix,iy,iz,e)
-      if(iffield(ifield-1)) temp=tin(ix,iy,iz,e,ifield-1)
+      
       return
       end
 c-----------------------------------------------------------------------
@@ -166,17 +151,6 @@ c      implicit none
       integer e
 c      logical idid
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
-      real zhat
-
-      ux   = 0.0
-      uy   = 0.0
-      uz   = 1.0
-      if (eg.gt.nelgv) uz = 0.0
-
-      temp = 0.0
-      zhat = (z-zc1)/(zc3-zc1)
-      write(*,*) zc1,zc3,zhat
-      if(eg.le.nelgv) temp = 0.5*(1.0-cos(pi*zhat))
 
       return
       end
@@ -188,54 +162,129 @@ c      implicit none
 
       include 'SIZE'
       include 'TOTAL'
+      include 'mpif.h'
 
-      integer ie, eg
-      real x1,y1,z1,maxtemp1, locflag1  ! flag=0 graphite
-      real x2,y2,z2,maxtemp2, locflag2  ! flag=0 graphite
-      parameter(lt=lx1*ly1*lz1*lelt)
+      common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
+      integer ierr, myrank, filehandle
+      integer lineLength, record, nproc
+      character lf
+      character(len = 9) :: opfile
+      parameter (lineLength = 100)
+      parameter (lf = Achar(10))
+      character(len = lineLength + 1) :: line
+
+      real maxtemp, vmax, vmin, roiz1, roiz2
+      real tx, ty, tz, xv1, yv1, zv1, xv2, yv2, zv2 
+
+      call load_fld('msre0.f00001')
       
-      locflag1 = 0
-      locflag2 = 0
-       
-      call load_fld('msre0.f000180')
       
-      maxtemp1 = iglmax(t, lx1*ly1*lz1*lelt*ldmit)
-      
-      do i = 1, lx1*ly1*lz1*lelt*ldmit
-          if (t(i,1,1,1,1)==maxtemp1) then
-              x1 = xm1(i,1,1,1)
-              y1 = ym1(i,1,1,1)
-              z1 = zm1(i,1,1,1)
-              if (eg .gt. nelgv) then
-              	locflag1 = 1
-              end if
+      maxtemp = -9999.0
+      vmax = -10000.0
+      vmin = 9999.0
+      roiz1 = 1.0
+      roiz2 = 2.0
+
+      do i = 1, lx1*ly1*lz1*lelt
+          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
+              if (t(i,1,1,1,1) .gt. maxtemp) then
+                  maxtemp = t(i,1,1,1,1)
+                  tx = xm1(i,1,1,1)
+                  ty = ym1(i,1,1,1)
+                  tz = zm1(i,1,1,1)
+              end if    
+              if (vz(i,1,1,1) .gt. vmax) then
+                  vmax = vz(i,1,1,1)
+                  xv1 = xm1(i,1,1,1)
+                  yv1 = ym1(i,1,1,1)
+                  zv1 = zm1(i,1,1,1)
+              end if    
+              if (vz(i,1,1,1) .lt. vmin) then
+                  vmin = vz(i,1,1,1)
+                  xv2 = xm1(i,1,1,1)
+                  yv2 = ym1(i,1,1,1)
+                  zv2 = zm1(i,1,1,1)
+              end if    
           end if
-      end do 
+      end do
+      ierr = 1
+      
+      call mpi_comm_rank(mpi_comm_world, myrank, ierr)
+      call mpi_comm_size( mpi_comm_world, nproc, ierr)
+    
+      call mpi_type_contiguous(lineLength + 1, mpi_character,
+     $                          record, ierr)
+      
+      call mpi_type_commit( record, ierr)
+ 
+      opfile = 'temp.data'
 
-      call load_fld('AVGmsre0.f00001')
-      
-      maxtemp2 = iglmax(t, lx1*ly1*lz1*lelt*ldmit)
-      
-      do i = 1, lx1*ly1*lz1*lelt*ldmit
-          if (t(i,1,1,1,1)==maxtemp2) then
-              x2 = xm1(i,1,1,1)
-              y2 = ym1(i,1,1,1)
-              z2 = zm1(i,1,1,1)
-              if (eg .gt. nelgv) then
-              	locflag2 = 1
-              end if
-          end if
-      end do 
-      
-      ! output
-      open(1, file = 'maxtemp.txt', status = 'new')
-      write(1,*) 'MAX. TEMP. DATA.'
-      write(1,*) 'LAST TIME STEP:'
-      write(1,*) maxtemp1, x1, y1, z1, locflag1
-      write(1,*) 'AVG FILE:'
-      write(1,*) maxtemp2, x2, y2, z2, locflag2
+      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
+     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
+     $                 MPI_INFO_NULL, filehandle, ierr) 
+
+      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
+     $             record, record , 'native',  
+     $                     MPI_INFO_NULL, ierr) 
 
 
+      do i = myrank,nproc-1, nproc
+         write(line, '("thread:",i0,f16.8,f16.8,f16.8,f16.8)') 
+     $                        myrank, maxtemp, tx, ty, tz
+         line( len(line) : len(line) ) = lf
+         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
+     $               line, 1, record, mpi_status_ignore, ierr)
+      end do
+
+
+      call MPI_FILE_CLOSE(filehandle, ierr)
+      
+      opfile = 'vmax.data'
+
+      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
+     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
+     $                 MPI_INFO_NULL, filehandle, ierr) 
+
+      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
+     $             record, record , 'native',  
+     $                     MPI_INFO_NULL, ierr) 
+
+
+      do i = myrank,nproc-1, nproc
+         write(line, '("thread:",i0,f16.8,f16.8,f16.8,f16.8)') 
+     $                myrank, vmax, xv1, yv1, zv1
+         line( len(line) : len(line) ) = lf
+         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
+     $               line, 1, record, mpi_status_ignore, ierr)
+      end do
+
+
+      call MPI_FILE_CLOSE(filehandle, ierr)
+      
+      opfile = 'vmin.data'
+
+      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
+     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
+     $                 MPI_INFO_NULL, filehandle, ierr) 
+
+      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
+     $             record, record , 'native',  
+     $                     MPI_INFO_NULL, ierr) 
+
+
+      do i = myrank,nproc-1, nproc
+         write(line, '("thread:",i0,f16.8,f16.8,f16.8,f16.8)') 
+     $                myrank, vmin, xv2, yv2, zv2
+         line( len(line) : len(line) ) = lf
+         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
+     $               line, 1, record, mpi_status_ignore, ierr)
+      end do
+
+
+      call MPI_FILE_CLOSE(filehandle, ierr)
+     
+      call mpi_type_free(record, ierr)
+      
       return
       end
 c-----------------------------------------------------------------------
@@ -253,16 +302,13 @@ c      implicit none
       include 'SIZE'
       include 'TOTAL'
       
-      logical iffield
-      
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
 
-      
       dh=0.624
       dhsi=0.0158496
-      zc1=-62.0/dh
+      zc1=-1.0/dh
       zc2=1.0/dh
-      zc3=8.0/dh
+      zc3=2.0/dh
       uav=0.2194
       return
       
@@ -274,7 +320,6 @@ c      implicit none
 
       include 'SIZE'
       include 'TOTAL'
-
 
       return
       end
