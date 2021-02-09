@@ -22,7 +22,6 @@ y8 = Sqrt((0.3^2)-(x8-l1+l2+r)^2)-l1;
 y9 = Sqrt((0.3^2)-(x9-l1+l2+r)^2)-l1;
 
 h = 1; //z coordinate at which plenum begins, inches
-n = 10; // no. of layers in plenum
 hp = 7; //plenum height, inches
 hc = -62; //z coordinate at which channel begins
 lc = 63; //channel length
