@@ -187,11 +187,11 @@ c      implicit none
 
       do i = 1, lx1*ly1*lz1*lelt
           if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
-              tempave = tempave + (t(i,1,1,1,1)*bm1(i,1,1,1))
+              tempave = tempave + (t(i,1,1,1,1)*bm1(i,1,1,1))   ! temp volumetric avg for graphite AND salt, using GLL quadrature
           end if
       end do
 
-      tempave = glsum(tempave,1)/roivol
+      tempave = glsum(tempave,1)/roivol    ! non-dimensional temperature per unit non-dimensional volume
 
       ierr = 1
       
@@ -214,7 +214,8 @@ c      implicit none
      $                     MPI_INFO_NULL, ierr) 
 
 
-      do i = myrank,nproc-1, nproc
+c      do i = myrank,nproc-1, nproc   ! op from all threads - test code
+      do i = myrank,0, nproc      ! o/p from thread 0
          write(line, '("thread:",i0,f16.8,f16.8,f16.8)') 
      $                myrank, tempave
          line( len(line) : len(line) ) = lf
