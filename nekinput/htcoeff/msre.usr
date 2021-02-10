@@ -181,7 +181,10 @@ c      implicit none
       character(len = lineLength + 1) :: line
 
       real xmax, xmin, ymax, ymin, zmax, zmin
-      real hzave, azave
+      real dtdzavg, azave, tsolid, sasolid, htz
+      real tbulk, plenvol, roiz1, denom
+
+      roiz1 = 1.0 ! start of fluid bulk region
 
       ntot = lx1*ly1*lz1*nelt 
  
@@ -192,29 +195,59 @@ c      implicit none
 
       call outpost(vx,vy,vz,pr,dtdz,'foo')
  
-      hzave = 0.0
+      dtdzavg = 0.0
       azave = 0.0
+      tsolid = 0.0
+      sasolid = 0.0
+      tbulk = 0.0
+      denom = 0.0
 
-      do e = 1, nelt
+      do e = 1, lelt                   ! calculate fluid bulk temp from roiz1 to top of plenum
+       do i = 1, lx1*ly1*lz1
+        eg = lglel(e)
+        if (zm1(i,1,1,e).ge.roiz1 .and. eg.le.nelgv) then
+            tbulk = tbulk + (t(i,1,1,e,1)*vz(i,1,1,e)
+     $      *bm1(i,1,1,e))
+            denom = denom + (vz(i,1,1,e)*bm1(i,1,1,e))
+        endif
+       enddo
+      enddo
+      
+      tbulk = glsum(tbulk,1)          ! global sum
+      denom = glsum(denom,1)
+      tbulk = tbulk/denom
+
+      do e = 1, nelt                 ! calculate average temp gradient in z dir
        do f = 1, 2*ndim
         id_face2 = bc(5,f,e,2)
         if (id_face2.eq.400) then
-           hzave = hzave + facint_v(dtdz,area,f,e)
+           dtdzavg = dtdzavg + facint_v(dtdz,area,f,e)
            azave = azave + facint_v(one,area,f,e)
+        endif
+        if (id_face2.eq.11) then              ! calculate average temperature of top of graphite stringer
+           tsolid = tsolid + facint_v(t,area,f,e)
+           sasolid = sasolid + facint_v(one,area,f,e)
         endif
        enddo
       enddo
            
-      hzave = glsum(hzave,1)
+      dtdzavg = glsum(dtdzavg,1)
       azave = glsum(azave,1)
-      hzave = hzave / azave
+      
+      tsolid = glsum(tsolid,1)
+      sasolid = glsum(sasolid,1)
+      tsolid = tsolid/sasolid
+
+      htz = dtdzavg/azave/(tbulk-tsolid)
+      htz = htz*(dhsi**3) ! re-dimensionalise with hydraulic dia
+      htz = 1.43651*htz ! times salt thermal conductivity, SI units
 
       ierr = 1
       
       call mpi_comm_rank(mpi_comm_world, myrank, ierr)
       call mpi_comm_size( mpi_comm_world, nproc, ierr)
     
-      call mpi_type_contiguous(lineLength + 1, mpi_character,
+      call mpi_type_contiguous(lineLength + 1, mpi_character, ! create new data type
      $                          record, ierr)
       
       call mpi_type_commit( record, ierr)
@@ -230,9 +263,10 @@ c      implicit none
      $                     MPI_INFO_NULL, ierr) 
 
 
-      do i = myrank,nproc-1, nproc
+c      do i = myrank,nproc-1, nproc  ! test-code-gets o/p from all threads
+      do i = myrank,0                ! o/p from first thread only
          write(line, '("thread:",i0,f16.8)') 
-     $                myrank, hzave
+     $                myrank, htz
          line( len(line) : len(line) ) = lf
          call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
      $               line, 1, record, mpi_status_ignore, ierr)
@@ -241,7 +275,7 @@ c      implicit none
 
       call MPI_FILE_CLOSE(filehandle, ierr)
      
-      call mpi_type_free(record, ierr)
+      call mpi_type_free(record, ierr)   ! clean up
       
       return
       end
