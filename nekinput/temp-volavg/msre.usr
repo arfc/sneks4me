@@ -165,7 +165,7 @@ c      implicit none
       include 'mpif.h'
 
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
-      integer ierr, myrank, filehandle
+      integer ierr, myrank, filehandle, e, eg
       integer lineLength, record, nproc
       character lf
       character(len = 13) :: opfile
@@ -173,7 +173,8 @@ c      implicit none
       parameter (lf = Achar(10))
       character(len = lineLength + 1) :: line
 
-      real tempave, roivol, roiz1, roiz2
+      real tempaveSalt,tempaveGraph
+      real roiz1, roiz2, volGraph, volSalt
       real xmax, xmin, ymax, ymin, zmax, zmin
 
       call load_fld('msre0.f00001')
@@ -182,16 +183,33 @@ c      implicit none
       roiz1 = 1.0
       roiz2 = 2.0
 
-      roivol = (xmax - xmin) * (ymax - ymin) * (roiz2 - roiz1)
-      tempave = 0.0
+      tempaveSalt = 0.0
+      tempaveGraph = 0.0
+      volGraph = 0.0
+      volSalt = 0.0
 
-      do i = 1, lx1*ly1*lz1*lelt
-          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
-              tempave = tempave + (t(i,1,1,1,1)*bm1(i,1,1,1))   ! temp volumetric avg for graphite AND salt, using GLL quadrature
-          end if
+      do e = 1,lelt
+      do i = 1,lx1*ly1*lz1
+       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then 
+        eg = lglel(e)
+        if (eg. le. nelgv) then
+         tempaveSalt = tempaveSalt + (t(i,1,1,e,1)*bm1(i,1,1,e))
+         volSalt = volSalt + bm1(i,1,1,e)
+        else
+         tempaveGraph = tempaveGraph + (t(i,1,1,e,1)*bm1(i,1,1,e))
+         volGraph = volGraph + bm1(i,1,1,e)
+        end if
+       end if
+      end do
       end do
 
-      tempave = glsum(tempave,1)/roivol    ! non-dimensional temperature per unit non-dimensional volume
+      tempaveSalt = glsum(tempaveSalt,1)
+      volSalt = glsum(volSalt,1)
+      tempaveGraph = glsum(tempaveGraph,1)
+      volGraph = glsum(volGraph,1)
+
+      tempaveSalt = tempaveSalt/volSalt
+      tempaveGraph = tempaveGraph/volGraph
 
       ierr = 1
       
@@ -214,10 +232,9 @@ c      implicit none
      $                     MPI_INFO_NULL, ierr) 
 
 
-c      do i = myrank,nproc-1, nproc   ! op from all threads - test code
-      do i = myrank,0, nproc      ! o/p from thread 0
-         write(line, '("thread:",i0,f16.8,f16.8,f16.8)') 
-     $                myrank, tempave
+      do i = myrank,nproc-1, nproc
+         write(line, '("thread:",i0,f16.8,f16.8)') 
+     $                myrank, tempaveSalt,tempaveGraph
          line( len(line) : len(line) ) = lf
          call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
      $               line, 1, record, mpi_status_ignore, ierr)
