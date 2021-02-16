@@ -14,9 +14,9 @@ c     - usrdat2 : modify mesh coordinates
 c     - usrdat3 : general purpose routine for initialization
 c     
 c-----------------------------------------------------------------------
-      include "/home/achaube/usrcode/limits.f"
-      include "/home/achaube/usrcode/utilities.f"
-      include "/home/achaube/usrcode/recycle.f"
+      include "/u/sciteam/chaube/usrcode/limits.f"
+      include "/u/sciteam/chaube/usrcode/utilities.f"
+      include "/u/sciteam/chaube/usrcode/recycle.f"
 c-----------------------------------------------------------------------
       subroutine uservp(ix,iy,iz,eg) ! set variable properties
 
@@ -29,8 +29,6 @@ c      implicit none
       include 'NEKUSE'
 
       integer e
-      real k_ratio
-
       e = gllel(eg)
 
       cond_graphite = 13 ! "conservative" value from TM 3229
@@ -167,16 +165,7 @@ c      implicit none
       include 'mpif.h'
 
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
-      common /mygrad/ dtdx(lx1,ly1,lz1,lelt)
-     $              , dtdy(lx1,ly1,lz1,lelt)
-     $              , dtdz(lx1,ly1,lz1,lelt)
-
-      integer e, f
-      real one(lx1*ly1*lz1*lelt)
-      real wk(lx1*ly1*lz1)
-      real dq, aq
-
-      integer ierr, myrank, filehandle
+      integer ierr, myrank, filehandle, e, eg
       integer lineLength, record, nproc
       character lf
       character(len = 13) :: opfile
@@ -184,82 +173,70 @@ c      implicit none
       parameter (lf = Achar(10))
       character(len = lineLength + 1) :: line
 
+      real one(lx1*ly1*lz1*lelt)
+
+      real tempaveSalt,tempaveGraph, gsurft,gsurfsa
+      real roiz1, roiz2, volGraph, volSalt
       real xmax, xmin, ymax, ymin, zmax, zmin
-      real dtdzavg, azave, tsolid, sasolid, htz
-      real tbulk, plenvol, roiz1, denom
 
-      roiz1 = 1.0 ! start of fluid bulk region
-
-      ntot = lx1*ly1*lz1*nelt 
- 
-      call load_fld('msre0.f00001')
+      call load_fld('AVGmsre0.f00001')
       call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
-      call gradm1(dtdx,dtdy,dtdz,t)
+      
+      roiz1 = 0.5/dh
+      roiz2 = (1.0/dh) + dh
+      ntot = lx1*ly1*lz1*lelt
+
       call rone(one,ntot)
 
-      call outpost(vx,vy,vz,pr,dtdz,'foo')
- 
-      tbulk = 0.0
-      denom = 0.0
+      tempaveSalt = 0.0
+      tempaveGraph = 0.0
+      volGraph = 0.0
+      volSalt = 0.0
+      gsurft = 0.0
+      gsurfsa = 0.0
 
-      do e = 1, lelt
-       do i = 1, lx1*ly1*lz1
-        eg = lglel(e)
-        if (zm1(i,1,1,e).ge.roiz1 .and. eg.le.nelgv) then
-            tbulk = tbulk + (t(i,1,1,e,1)*vz(i,1,1,e)
-     $      *bm1(i,1,1,e))
-            denom = denom + (vz(i,1,1,e)*bm1(i,1,1,e))
-        endif
-       enddo
-      enddo
-      
-      tbulk = glsum(tbulk,1)
-      denom = glsum(denom,1)
-      tbulk = tbulk/denom
-
-      dtdzavg = 0.0
-      azave = 0.0
-      tsolid = 0.0
-      sasolid = 0.0
-
+      do e = 1,nelt
+      do i = 1,lx1*ly1*lz1
+       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then 
+        if (e. le. nelv) then
+         tempaveSalt = tempaveSalt + (t(i,1,1,e,1)*bm1(i,1,1,e))
+         volSalt = volSalt + bm1(i,1,1,e)
+        else
+         tempaveGraph = tempaveGraph + (t(i,1,1,e,1)*bm1(i,1,1,e))
+         volGraph = volGraph + bm1(i,1,1,e)
+        end if
+       end if
+      end do
+      end do
 
       do e = 1, nelt
        do f = 1, 2*ndim
         id_face2 = bc(5,f,e,2)
-        if (id_face2.eq.400) then
-c           dtdzavg = dtdzavg + facint_v(dtdz,area,f,e)
-c           azave = azave + facint_v(one,area,f,e)
-            call surface_flux_area(dq,aq,dtdx,dtdy,dtdz,e,f,wk) ! DECLARE WK!!!
-            dtdzavg = dtdzavg + dq
-            azave = azave + aq                     
-        endif
         if (id_face2.eq.11) then
-           tsolid = tsolid + facint_v(t,area,f,e)
-           sasolid = sasolid + facint_v(one,area,f,e)
+           gsurft = gsurft + facint_v(t,area,f,e)
+           gsurfsa = gsurfsa + facint_v(one,area,f,e)
         endif
        enddo
       enddo
-           
-      dtdzavg = glsum(dtdzavg,1)
-      azave = glsum(azave,1)
-      
-      tsolid = glsum(tsolid,1)
-      sasolid = glsum(sasolid,1)
-      tsolid = tsolid/sasolid
 
-      conduct_si = 1.43651 ! salt thermal conductivity, SI units
- 
-      htz = dtdzavg/azave/(tbulk-tsolid)
-      htz = htz*(dhsi**3) ! re-dimensionalise with hydraulic dia
-      htz = conduct_si*htz ! times salt thermal conductivity, SI units
+      gsurft = glsum(gsurft,1)
+      gsurfsa = glsum(gsurfsa,1)
+      gsurft = gsurft/gsurfsa
 
-      opfile = 'heatzav.data'
+      tempaveSalt = glsum(tempaveSalt,1)
+      volSalt = glsum(volSalt,1)
+      tempaveGraph = glsum(tempaveGraph,1)
+      volGraph = glsum(volGraph,1)
 
-      open(unit=22,file=opfile)
-      if (nio.eq.0) write(22,1) htz, dtdzavg, azave, tsolid, tbulk
-1     format(1p5e16.8,' avgtemps')
+      tempaveSalt = tempaveSalt/volSalt
+      tempaveGraph = tempaveGraph/volGraph
+
+      open(unit=22,file='myfile')
+      if (nio.eq.0) write(22,1) tempaveSalt,tempaveGraph, gsurft,
+     $   volSalt, volGraph, gsurfsa   
+1     format(1p6e16.8,' avgtemps')
       close(22)
-      
+     
       return
       end
 c-----------------------------------------------------------------------
@@ -285,9 +262,6 @@ c      implicit none
       zc2=1.0/dh
       zc3=2.0/dh
       uav=0.2194
-
-      ifuservp = .true. 
-
       return
       
       end
