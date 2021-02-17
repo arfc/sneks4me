@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+if [[ ! -z $5 ]]; then
+  ntpn=$5
+else
+# assuming we're close to the strong scaling limit, use power of 2
+  ntpn=32
+fi
+
+prj="CMFD-RANS"
+
+echo "submitting job \"$1\" on $2 nodes ($ntpn ppn) for $3 hours and $4 minutes on project $prj"
+echo "    requires $(( $2 * 36 * $3 )) CPU-hours"
+
+echo   "#!/bin/bash"                         >  $1.batch
+echo   "#SBATCH --nodes=$2"                  >> $1.batch
+echo   "#SBATCH --ntasks-per-node=$ntpn"     >> $1.batch
+echo   "#SBATCH --time="$3":"$4":00"         >> $1.batch
+echo   "#SBATCH -p bdwall"                   >> $1.batch
+echo   "#SBATCH --output=logfile"            >> $1.batch
+echo   "#SBATCH -p bdwall"                   >> $1.batch
+echo   "#SBATCH --mail-user=achaube2@illinois.edu"                   >> $1.batch
+
+echo   "export I_MPI_FABRICS=shm:tmi"        >> $1.batch
+echo   "export I_MPI_OFI_PROVIDER=psm2"      >> $1.batch
+echo   "echo" $1      ">"  SESSION.NAME      >> $1.batch
+echo   "echo \`pwd\`'/' >> SESSION.NAME"     >> $1.batch
+echo   rm -f  *.sch                          >> $1.batch
+echo   rm -f ioinfo                          >> $1.batch
+echo   "which mpif77 >> logfile"             >>$1.batch                    
+echo   mpirun ./nek5000                      >> $1.batch
+echo   "exit 0;"                             >> $1.batch
+sbatch -A $prj $1.batch
+sleep 3
+squeue -u `whoami`
