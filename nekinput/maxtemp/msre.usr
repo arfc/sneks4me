@@ -168,7 +168,6 @@ c      implicit none
       integer ierr, myrank, filehandle
       integer lineLength, record, nproc
       character lf
-      character(len = 9) :: opfile
       parameter (lineLength = 100)
       parameter (lf = Achar(10))
       character(len = lineLength + 1) :: line
@@ -178,14 +177,13 @@ c      implicit none
 
       call load_fld('msre0.f00001')
       
-      
       maxtemp = -9999.0
       vmax = -10000.0
       vmin = 9999.0
       roiz1 = 1.0
       roiz2 = 2.0
 
-      do i = 1, lx1*ly1*lz1*lelt
+      do i = 1, lx1*ly1*lz1*nelt
           if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
               if (t(i,1,1,1,1) .gt. maxtemp) then
                   maxtemp = t(i,1,1,1,1)
@@ -207,84 +205,18 @@ c      implicit none
               end if    
           end if
       end do
-      ierr = 1
-      
-      call mpi_comm_rank(mpi_comm_world, myrank, ierr)
-      call mpi_comm_size( mpi_comm_world, nproc, ierr)
-    
-      call mpi_type_contiguous(lineLength + 1, mpi_character,
-     $                          record, ierr)
-      
-      call mpi_type_commit( record, ierr)
  
-      opfile = 'temp.data'
+      open(unit=22,file='maxdat')
+      if (nio.eq.0) then
+       write(22,1) maxtemp,tx,ty,tz 
+       write(22,2) vmax,xv1,yv1,zv1 
+       write(22,3) vmin,xv2,yv2,zv2 
+      endif 
+1     format(1p4e16.8,' maxtemp/x/y/z')
+2     format(1p4e16.8,' vmax/x/y/z')
+3     format(1p4e16.8,' vmin/x/y/z')
+      close(22)
 
-      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
-     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
-     $                 MPI_INFO_NULL, filehandle, ierr) 
-
-      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
-     $             record, record , 'native',  
-     $                     MPI_INFO_NULL, ierr) 
-
-
-      do i = myrank,nproc-1, nproc
-         write(line, '("thread:",i0,f16.8,f16.8,f16.8,f16.8)') 
-     $                        myrank, maxtemp, tx, ty, tz
-         line( len(line) : len(line) ) = lf
-         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
-     $               line, 1, record, mpi_status_ignore, ierr)
-      end do
-
-
-      call MPI_FILE_CLOSE(filehandle, ierr)
-      
-      opfile = 'vmax.data'
-
-      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
-     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
-     $                 MPI_INFO_NULL, filehandle, ierr) 
-
-      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
-     $             record, record , 'native',  
-     $                     MPI_INFO_NULL, ierr) 
-
-
-      do i = myrank,nproc-1, nproc
-         write(line, '("thread:",i0,f16.8,f16.8,f16.8,f16.8)') 
-     $                myrank, vmax, xv1, yv1, zv1
-         line( len(line) : len(line) ) = lf
-         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
-     $               line, 1, record, mpi_status_ignore, ierr)
-      end do
-
-
-      call MPI_FILE_CLOSE(filehandle, ierr)
-      
-      opfile = 'vmin.data'
-
-      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
-     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
-     $                 MPI_INFO_NULL, filehandle, ierr) 
-
-      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
-     $             record, record , 'native',  
-     $                     MPI_INFO_NULL, ierr) 
-
-
-      do i = myrank,nproc-1, nproc
-         write(line, '("thread:",i0,f16.8,f16.8,f16.8,f16.8)') 
-     $                myrank, vmin, xv2, yv2, zv2
-         line( len(line) : len(line) ) = lf
-         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
-     $               line, 1, record, mpi_status_ignore, ierr)
-      end do
-
-
-      call MPI_FILE_CLOSE(filehandle, ierr)
-     
-      call mpi_type_free(record, ierr)
-      
       return
       end
 c-----------------------------------------------------------------------

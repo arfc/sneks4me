@@ -14,9 +14,9 @@ c     - usrdat2 : modify mesh coordinates
 c     - usrdat3 : general purpose routine for initialization
 c     
 c-----------------------------------------------------------------------
-      include "/home/achaube/usrcode/limits.f"
-      include "/home/achaube/usrcode/utilities.f"
-      include "/home/achaube/usrcode/recycle.f"
+      include "/u/sciteam/chaube/usrcode/limits.f"
+      include "/u/sciteam/chaube/usrcode/utilities.f"
+      include "/u/sciteam/chaube/usrcode/recycle.f"
 c-----------------------------------------------------------------------
       subroutine uservp(ix,iy,iz,eg) ! set variable properties
 
@@ -173,27 +173,36 @@ c      implicit none
       parameter (lf = Achar(10))
       character(len = lineLength + 1) :: line
 
-      real tempaveSalt,tempaveGraph
+      real one(lx1*ly1*lz1*lelt)
+
+      real tempaveSalt,tempaveGraph, gsurft,gsurfsa
+      real vzave
       real roiz1, roiz2, volGraph, volSalt
       real xmax, xmin, ymax, ymin, zmax, zmin
 
-      call load_fld('msre0.f00001')
+      call load_fld('AVGmsre0.f00001')
       call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
       
-      roiz1 = 1.0
-      roiz2 = 2.0
+      roiz1 = 0.5/dh
+      roiz2 = (1.0/dh) + dh
+      ntot = lx1*ly1*lz1*lelt
+
+      call rone(one,ntot)
 
       tempaveSalt = 0.0
       tempaveGraph = 0.0
       volGraph = 0.0
       volSalt = 0.0
+      gsurft = 0.0
+      gsurfsa = 0.0
+      vzave = 0.0
 
-      do e = 1,lelt
+      do e = 1,nelt
       do i = 1,lx1*ly1*lz1
        if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then 
-        eg = lglel(e)
-        if (eg. le. nelgv) then
+        if (e. le. nelv) then
          tempaveSalt = tempaveSalt + (t(i,1,1,e,1)*bm1(i,1,1,e))
+         vzave = vzave + (vz(i,1,1,e)*bm1(i,1,1,e))
          volSalt = volSalt + bm1(i,1,1,e)
         else
          tempaveGraph = tempaveGraph + (t(i,1,1,e,1)*bm1(i,1,1,e))
@@ -203,47 +212,36 @@ c      implicit none
       end do
       end do
 
+      do e = 1, nelt
+       do f = 1, 2*ndim
+        id_face2 = bc(5,f,e,2)
+        if (id_face2.eq.11) then
+           gsurft = gsurft + facint_v(t,area,f,e)
+           gsurfsa = gsurfsa + facint_v(one,area,f,e)
+        endif
+       enddo
+      enddo
+
+      gsurft = glsum(gsurft,1)
+      gsurfsa = glsum(gsurfsa,1)
+      gsurft = gsurft/gsurfsa
+
       tempaveSalt = glsum(tempaveSalt,1)
       volSalt = glsum(volSalt,1)
       tempaveGraph = glsum(tempaveGraph,1)
       volGraph = glsum(volGraph,1)
+      vzave = glsum(vzave,1)
 
       tempaveSalt = tempaveSalt/volSalt
       tempaveGraph = tempaveGraph/volGraph
+      vzave = vzave/volSalt
 
-      ierr = 1
-      
-      call mpi_comm_rank(mpi_comm_world, myrank, ierr)
-      call mpi_comm_size( mpi_comm_world, nproc, ierr)
-    
-      call mpi_type_contiguous(lineLength + 1, mpi_character,
-     $                          record, ierr)
-      
-      call mpi_type_commit( record, ierr)
- 
-      opfile = 'tempave.data'
-
-      call MPI_FILE_OPEN(MPI_COMM_WORLD, opfile,  
-     $                 MPI_MODE_WRONLY + MPI_MODE_CREATE, 
-     $                 MPI_INFO_NULL, filehandle, ierr) 
-
-      call MPI_FILE_SET_VIEW(filehandle, 0_mpi_offset_kind, 
-     $             record, record , 'native',  
-     $                     MPI_INFO_NULL, ierr) 
-
-
-      do i = myrank,nproc-1, nproc
-         write(line, '("thread:",i0,f16.8,f16.8)') 
-     $                myrank, tempaveSalt,tempaveGraph
-         line( len(line) : len(line) ) = lf
-         call mpi_file_write_at(filehandle, int( i, mpi_offset_kind),
-     $               line, 1, record, mpi_status_ignore, ierr)
-      end do
-
-      call MPI_FILE_CLOSE(filehandle, ierr)
+      open(unit=22,file='avgdat')
+      if (nio.eq.0) write(22,1) vzave,tempaveSalt,tempaveGraph, 
+     $  gsurft, volSalt, volGraph, gsurfsa   
+1     format(1p7e16.8,' avg vz,ts,tg,tsurfg,Vs,Vg,SAg')
+      close(22)
      
-      call mpi_type_free(record, ierr)
-      
       return
       end
 c-----------------------------------------------------------------------
