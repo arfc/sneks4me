@@ -161,17 +161,15 @@ c      implicit none
       include 'TOTAL'
       include 'mpif.h'
 
+      integer e,f
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
 
-      real one(lx1*ly1*lz1*nelt)
+      real one(lx1*ly1*lz1*lelt)
 
-      real tempaveSalt,tempaveGraph, gsurft,gsurfsa
-      real vzave
-      real roiz1, roiz2, volGraph, volSalt
-      real xmax, xmin, ymax, ymin, zmax, zmin
+      real tempaveSalt,tempaveGraph,gsurft,gsurfsa,vzave
+      real roiz1,roiz2,volGraph,volSalt
 
-      call load_fld('msre0.f00010')
-      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
+      call load_fld('AVGmsre0.f00001')
       
       roiz1 = 1
       roiz2 = 2
@@ -179,15 +177,15 @@ c      implicit none
 
       call rone(one,ntot)
 
-      tempaveSalt = 0.0
+      tempaveSalt  = 0.0
       tempaveGraph = 0.0
-      volGraph = 0.0
-      volSalt = 0.0
-      vzave = 0.0
+      volGraph     = 0.0
+      volSalt      = 0.0
+      vzave        = 0.0
 
       do e = 1,nelt
       do i = 1,lx1*ly1*lz1
-       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then 
+       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then
         if (e. le. nelv) then
          tempaveSalt = tempaveSalt + (t(i,1,1,e,1)*bm1(i,1,1,e))
          vzave = vzave + (vz(i,1,1,e)*bm1(i,1,1,e))
@@ -200,37 +198,40 @@ c      implicit none
       end do
       end do
 
-      gsurft = 0.0
+      gsurft  = 0.0
       gsurfsa = 0.0
       
       do e = 1, nelt
        do f = 1, 2*ndim
         id_face2 = bc(5,f,e,2)
         if (id_face2.eq.11) then
-           gsurft = gsurft + facint_v(t,area,f,e)
+           gsurft  = gsurft + facint_v(t,area,f,e)
            gsurfsa = gsurfsa + facint_v(one,area,f,e)
         endif
        enddo
       enddo
 
-      gsurft = glsum(gsurft,1)
+      gsurft  = glsum(gsurft,1)
       gsurfsa = glsum(gsurfsa,1)
-      gsurft = gsurft/gsurfsa
+      gsurft  = gsurft/gsurfsa
 
-      tempaveSalt = glsum(tempaveSalt,1)
-      volSalt = glsum(volSalt,1)
+      tempaveSalt  = glsum(tempaveSalt,1)
+      volSalt      = glsum(volSalt,1)
       tempaveGraph = glsum(tempaveGraph,1)
-      volGraph = glsum(volGraph,1)
-      vzave = glsum(vzave,1)
+      volGraph     = glsum(volGraph,1)
+      vzave        = glsum(vzave,1)
 
-      tempaveSalt = tempaveSalt/volSalt
+      tempaveSalt  = tempaveSalt/volSalt
       tempaveGraph = tempaveGraph/volGraph
-      vzave = vzave/volSalt
+      vzave        = vzave/volSalt
 
       open(unit=22,file='avgdat')
-      if (nio.eq.0) write(22,1) vzave,tempaveSalt,tempaveGraph, 
-     $  gsurft, volSalt, volGraph, gsurfsa   
-1     format(1p7e16.8,' avg vz,ts,tg,tsurfg,Vs,Vg,SAg')
+      if (nio.eq.0) then
+         write(22,1) vzave,tempaveSalt,tempaveGraph,gsurft 
+         write(22,2) volSalt, volGraph, gsurfsa   
+      endif
+1     format(1p4e16.8,' avg vz/ts/tg/tsurfg')
+2     format(1p3e16.8,' Vs/Vg/SAg')
       close(22)
      
       return
@@ -249,9 +250,9 @@ c      implicit none
 
       include 'SIZE'
       include 'TOTAL'
-      
+     
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
-
+     
       dh=0.624
       dhsi=0.0158496
       zc1=-1.0/dh
