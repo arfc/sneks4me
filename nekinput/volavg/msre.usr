@@ -198,6 +198,16 @@ c      implicit none
       end do
       end do
 
+      tempaveSalt  = glsum(tempaveSalt,1)
+      volSalt      = glsum(volSalt,1)
+      tempaveGraph = glsum(tempaveGraph,1)
+      volGraph     = glsum(volGraph,1)
+      vzave        = glsum(vzave,1)
+
+      tempaveSalt  = tempaveSalt/volSalt
+      tempaveGraph = tempaveGraph/volGraph
+      vzave        = vzave/volSalt
+
       gsurft  = 0.0
       gsurfsa = 0.0
       
@@ -215,24 +225,14 @@ c      implicit none
       gsurfsa = glsum(gsurfsa,1)
       gsurft  = gsurft/gsurfsa
 
-      tempaveSalt  = glsum(tempaveSalt,1)
-      volSalt      = glsum(volSalt,1)
-      tempaveGraph = glsum(tempaveGraph,1)
-      volGraph     = glsum(volGraph,1)
-      vzave        = glsum(vzave,1)
-
-      tempaveSalt  = tempaveSalt/volSalt
-      tempaveGraph = tempaveGraph/volGraph
-      vzave        = vzave/volSalt
-
-      open(unit=22,file='avgdat')
       if (nio.eq.0) then
+         open(unit=22,file='avgdat',status='REPLACE')
          write(22,1) vzave,tempaveSalt,tempaveGraph,gsurft 
          write(22,2) volSalt, volGraph, gsurfsa   
+         close(22)
       endif
 1     format(1p4e16.8,' avg vz/ts/tg/tsurfg')
 2     format(1p3e16.8,' Vs/Vg/SAg')
-      close(22)
      
       return
       end
