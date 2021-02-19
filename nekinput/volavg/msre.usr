@@ -14,9 +14,6 @@ c     - usrdat2 : modify mesh coordinates
 c     - usrdat3 : general purpose routine for initialization
 c     
 c-----------------------------------------------------------------------
-      include "/u/sciteam/chaube/usrcode/limits.f"
-      include "/u/sciteam/chaube/usrcode/utilities.f"
-      include "/u/sciteam/chaube/usrcode/recycle.f"
 c-----------------------------------------------------------------------
       subroutine uservp(ix,iy,iz,eg) ! set variable properties
 
@@ -39,7 +36,7 @@ c      implicit none
       utrans = cpfld(ifield,2)
       if(eg.gt.nelgv) then
         udiff = cpfld(ifield,1)*k_ratio
-        utrans = 0.1
+        utrans = 0.7415
       endif
       
 
@@ -165,27 +162,20 @@ c      implicit none
       include 'mpif.h'
 
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
-      integer ierr, myrank, filehandle, e, eg
-      integer lineLength, record, nproc
-      character lf
-      character(len = 13) :: opfile
-      parameter (lineLength = 100)
-      parameter (lf = Achar(10))
-      character(len = lineLength + 1) :: line
 
-      real one(lx1*ly1*lz1*lelt)
+      real one(lx1*ly1*lz1*nelt)
 
       real tempaveSalt,tempaveGraph, gsurft,gsurfsa
       real vzave
       real roiz1, roiz2, volGraph, volSalt
       real xmax, xmin, ymax, ymin, zmax, zmin
 
-      call load_fld('AVGmsre0.f00001')
+      call load_fld('msre0.f00010')
       call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
       
-      roiz1 = 0.5/dh
-      roiz2 = (1.0/dh) + dh
-      ntot = lx1*ly1*lz1*lelt
+      roiz1 = 1
+      roiz2 = 2
+      ntot = lx1*ly1*lz1*nelt
 
       call rone(one,ntot)
 
@@ -193,8 +183,6 @@ c      implicit none
       tempaveGraph = 0.0
       volGraph = 0.0
       volSalt = 0.0
-      gsurft = 0.0
-      gsurfsa = 0.0
       vzave = 0.0
 
       do e = 1,nelt
@@ -212,6 +200,9 @@ c      implicit none
       end do
       end do
 
+      gsurft = 0.0
+      gsurfsa = 0.0
+      
       do e = 1, nelt
        do f = 1, 2*ndim
         id_face2 = bc(5,f,e,2)
