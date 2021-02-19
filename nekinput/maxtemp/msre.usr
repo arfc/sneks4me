@@ -162,55 +162,84 @@ c      implicit none
 
       include 'SIZE'
       include 'TOTAL'
-      include 'mpif.h'
 
       common /comparams/ dh,dhsi,zc1,zc2,zc3,uav
-      integer ierr, myrank, filehandle
-      integer lineLength, record, nproc
-      character lf
-      parameter (lineLength = 100)
-      parameter (lf = Achar(10))
-      character(len = lineLength + 1) :: line
 
       real maxtemp, vmax, vmin, roiz1, roiz2
       real tx, ty, tz, xv1, yv1, zv1, xv2, yv2, zv2 
 
       call load_fld('msre0.f00001')
+      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
       
       maxtemp = -9999.0
       vmax = -10000.0
       vmin = 9999.0
-      roiz1 = 1.0
-      roiz2 = 2.0
+      roiz1 = zmin
+      roiz2 = zmax
 
       do i = 1, lx1*ly1*lz1*nelt
           if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
               if (t(i,1,1,1,1) .gt. maxtemp) then
                   maxtemp = t(i,1,1,1,1)
+              end if    
+              if (vz(i,1,1,1) .gt. vmax) then
+                  vmax = vz(i,1,1,1)
+              end if    
+              if (vz(i,1,1,1) .lt. vmin) then
+                  vmin = vz(i,1,1,1)
+              end if    
+          end if
+      end do
+      
+      maxtemp = glmax(maxtemp,1)
+      vmax = glmax(vmax,1)
+      vmin = glmin(vmin,1)
+
+
+      tx  = -9999 
+      y   = -9999
+      tz  = -9999
+      xv1 = -9999
+      yv1 = -9999
+      zv1 = -9999
+      xv2 = -9999
+      yv2 = -9999
+      zv2 = -9999
+      do i = 1, lx1*ly1*lz1*nelt
+          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
+              if (t(i,1,1,1,1) == maxtemp) then 
                   tx = xm1(i,1,1,1)
                   ty = ym1(i,1,1,1)
                   tz = zm1(i,1,1,1)
               end if    
-              if (vz(i,1,1,1) .gt. vmax) then
-                  vmax = vz(i,1,1,1)
+              if (vz(i,1,1,1) == vmax) then
                   xv1 = xm1(i,1,1,1)
                   yv1 = ym1(i,1,1,1)
                   zv1 = zm1(i,1,1,1)
               end if    
-              if (vz(i,1,1,1) .lt. vmin) then
-                  vmin = vz(i,1,1,1)
+              if (vz(i,1,1,1) == vmin) then
                   xv2 = xm1(i,1,1,1)
                   yv2 = ym1(i,1,1,1)
                   zv2 = zm1(i,1,1,1)
               end if    
           end if
       end do
- 
+
+      tx = glmax(tx,1)
+      ty = glmax(ty,1)
+      tz = glmax(tz,1)
+      xv1 = glmax(xv1,1)
+      yv1 = glmax(yv1,1)
+      zv1 = glmax(zv1,1)
+      xv2 = glmax(xv2,1)
+      yv2 = glmax(yv2,1)
+      zv2 = glmax(zv2,1)
+
       open(unit=22,file='maxdat')
       if (nio.eq.0) then
-       write(22,1) maxtemp,tx,ty,tz 
-       write(22,2) vmax,xv1,yv1,zv1 
-       write(22,3) vmin,xv2,yv2,zv2 
+          write(22,1) maxtemp,tx,ty,tz 
+          write(22,2) vmax,xv1,yv1,zv1 
+          write(22,3) vmin,xv2,yv2,zv2 
       endif 
 1     format(1p4e16.8,' maxtemp/x/y/z')
 2     format(1p4e16.8,' vmax/x/y/z')
