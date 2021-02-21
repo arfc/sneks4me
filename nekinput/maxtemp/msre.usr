@@ -197,7 +197,7 @@ c      implicit none
 
 
       tx  = -9999 
-      y   = -9999
+      ty  = -9999
       tz  = -9999
       xv1 = -9999
       yv1 = -9999
@@ -205,6 +205,7 @@ c      implicit none
       xv2 = -9999
       yv2 = -9999
       zv2 = -9999
+
       do i = 1, lx1*ly1*lz1*nelt
           if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
               if (t(i,1,1,1,1) == maxtemp) then 
