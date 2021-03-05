@@ -16,6 +16,15 @@ do
   while [ ${#str} -lt 5 ]; do # pad with zeros
       str="0"$str
   done
-  new="${fname}.f${str}"
+  new="NEW${fname}.f${str}"
   mv $i $new
 done
+
+for i in *.f*;
+do
+  fullname=$(basename "$i")
+  fnamelen=${#fullname}
+  newname=${fullname:3:$fnamelen}
+  mv $fullname $newname
+done
+
