@@ -1,0 +1,12 @@
+,BeF2,LiF,ZrF4,UF4,ThF4,Rho_0,a,Rho(inlet),Rho(outlet),http://moltensalt.org/references/static/downloads/pdf/ORNL-TM-2316.pdf,
+Fuel 1 - MSRE,29.1,65,5,0.9,0,,,2258.6,2258.6,TM 728,922 K
+Fuel 2 - Janz,30,64.8,5,0.2,0,2.687,0.000562,2176.704,2150.29,Janz 1988,Closest to MSRE data
+Fuel 3 - Janz,34,66,0,0,0,2.413,0.000488,1969.896,1946.96,Janz 1988,
+Fuel 4 - Cantor(F4),25,63,0,0.3,11.7,3.644,0.00063,3244.58,3214.97,Janz 1988,not relevant
+,,,,,,,,,,,
+MSRE density(T) calculation,,,,,,,,,,,
+Rho,T,a (assumed),Rho_0,Check,a(si),rho_0(si),,,,,
+2.2586,922.0389,0.0006,2.81182334,2.2586,0.6,2811.82334,,,,,
+,,,,,, ,,,,,
+Rho_inlet,,,,,,,,,,,
+2266.93334,,,,,,,,,,,
