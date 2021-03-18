@@ -167,14 +167,20 @@ c      implicit none
       real one(lx1*ly1*lz1*lelt)
 
       real tempaveSalt,tempaveGraph,gsurft,gsurfsa,vzave
-      real roiz1,roiz2,volGraph,volSalt
-      real maxtemp, vmax, vmin, roiz1, roiz2
-      real tx, ty, tz, xv1, yv1, zv1, xv2, yv2, zv2 
+      real tempaveSalt2,vzave2
+      real roiz1,roiz2,roiz3
+      real volGraph,volSalt,volSalt2
+      real maxtemp,vmax,vmin,maxtemp2,vmax2,vmin2
+      real tx, ty, tz, xv1, yv1, zv1, xv2, yv2, zv2
+     $ tx2, ty2, tz2, xv3, yv3, zv3, xv4, yv4, zv4
 
       call load_fld('AVGmsre0.f00001')
-      
-      roiz1 = 1
-      roiz2 = 2
+      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax) 
+
+      roiz1 = -0.6           ! end of channel
+      roiz2 = 1.0/dh        ! at tip
+      roiz3 = zmax - (5*dh) ! near the outlet 
+
       ntot = lx1*ly1*lz1*nelt
 
       call rone(one,ntot)
@@ -184,10 +190,13 @@ c      implicit none
       volGraph     = 0.0
       volSalt      = 0.0
       vzave        = 0.0
+      vzave2       = 0.0
+      tempaveSalt2 = 0.0
+      volSalt2     = 0.0
 
       do e = 1,nelt
       do i = 1,lx1*ly1*lz1
-       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then
+       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz3) then
         if (e. le. nelv) then
          tempaveSalt = tempaveSalt + (t(i,1,1,e,1)*bm1(i,1,1,e))
          vzave = vzave + (vz(i,1,1,e)*bm1(i,1,1,e))
@@ -197,6 +206,13 @@ c      implicit none
          volGraph = volGraph + bm1(i,1,1,e)
         end if
        end if
+       if (zm1(i,1,1,e).ge.roiz1.and.zm1(i,1,1,e).le.roiz2) then
+        if (e. le. nelv) then
+         tempaveSalt2= tempaveSalt2 + (t(i,1,1,e,1)*bm1(i,1,1,e))
+         vzave2 = vzave2 + (vz(i,1,1,e)*bm1(i,1,1,e))
+         volSalt2 = volSalt2 + bm1(i,1,1,e)
+        endif
+       endif
       end do
       end do
 
@@ -205,10 +221,15 @@ c      implicit none
       tempaveGraph = glsum(tempaveGraph,1)
       volGraph     = glsum(volGraph,1)
       vzave        = glsum(vzave,1)
+      tempaveSalt2 = glsum(tempaveSalt2,1)
+      volSalt2     = glsum(volSalt2,1)
+      vzave2       = glsum(vzave2,1)
 
       tempaveSalt  = tempaveSalt/volSalt
       tempaveGraph = tempaveGraph/volGraph
       vzave        = vzave/volSalt
+      tempaveSalt2 = tempaveSalt2/volSalt2
+      vzave2       = vzave2/volSalt2
 
       gsurft  = 0.0
       gsurfsa = 0.0
@@ -227,12 +248,15 @@ c      implicit none
       gsurfsa = glsum(gsurfsa,1)
       gsurft  = gsurft/gsurfsa
 
-      maxtemp = -9999.0
-      vmax = -10000.0
-      vmin = 9999.0
+      maxtemp  = -9999.0
+      vmax     = -10000.0
+      vmin     = 9999.0
+      maxtemp2 = -9999.0
+      vmax2    = -10000.0
+      vmin2    = 9999.0
 
       do i = 1, lx1*ly1*lz1*nelt
-          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
+          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz3) then
               if (t(i,1,1,1,1) .gt. maxtemp) then
                   maxtemp = t(i,1,1,1,1)
               end if    
@@ -243,11 +267,25 @@ c      implicit none
                   vmin = vz(i,1,1,1)
               end if    
           end if
+          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
+              if (t(i,1,1,1,1) .gt. maxtemp2) then
+                  maxtemp2 = t(i,1,1,1,1)
+              end if    
+              if (vz(i,1,1,1) .gt. vmax2) then
+                  vmax2 = vz(i,1,1,1)
+              end if    
+              if (vz(i,1,1,1) .lt. vmin2) then
+                  vmin2 = vz(i,1,1,1)
+              end if    
+          end if
       end do
       
       maxtemp = glmax(maxtemp,1)
       vmax = glmax(vmax,1)
       vmin = glmin(vmin,1)
+      maxtemp2 = glmax(maxtemp2,1)
+      vmax2 = glmax(vmax2,1)
+      vmin2 = glmin(vmin2,1)
       
       tx  = -9999 
       ty  = -9999
@@ -258,9 +296,18 @@ c      implicit none
       xv2 = -9999
       yv2 = -9999
       zv2 = -9999
+      tx2 = -9999 
+      ty2 = -9999
+      tz2 = -9999
+      xv3 = -9999
+      yv3 = -9999
+      zv3 = -9999
+      xv4 = -9999
+      yv4 = -9999
+      zv4 = -9999
 
       do i = 1, lx1*ly1*lz1*nelt
-          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz2) then
+          if (zm1(i,1,1,1).ge.roiz1.and.zm1(i,1,1,1).le.roiz3) then
               if (t(i,1,1,1,1) == maxtemp) then 
                   tx = xm1(i,1,1,1)
                   ty = ym1(i,1,1,1)
@@ -276,6 +323,21 @@ c      implicit none
                   yv2 = ym1(i,1,1,1)
                   zv2 = zm1(i,1,1,1)
               end if    
+              if (t(i,1,1,1,1) == maxtemp2) then 
+                  tx2 = xm1(i,1,1,1)
+                  ty2 = ym1(i,1,1,1)
+                  tz2 = zm1(i,1,1,1)
+              end if    
+              if (vz(i,1,1,1) == vmax2) then
+                  xv3 = xm1(i,1,1,1)
+                  yv3 = ym1(i,1,1,1)
+                  zv3 = zm1(i,1,1,1)
+              end if    
+              if (vz(i,1,1,1) == vmin2) then
+                  xv4 = xm1(i,1,1,1)
+                  yv4 = ym1(i,1,1,1)
+                  zv4 = zm1(i,1,1,1)
+              end if    
           end if
       end do
 
@@ -288,21 +350,42 @@ c      implicit none
       xv2 = glmax(xv2,1)
       yv2 = glmax(yv2,1)
       zv2 = glmax(zv2,1)
+      tx2 = glmax(tx2,1)
+      ty2 = glmax(ty2,1)
+      tz2 = glmax(tz2,1)
+      xv3 = glmax(xv3,1)
+      yv3 = glmax(yv3,1)
+      zv3 = glmax(zv3,1)
+      xv4 = glmax(xv4,1)
+      yv4 = glmax(yv4,1)
+      zv4 = glmax(zv4,1)
 
       if (nio.eq.0) then
          open(unit=22,file='avgdat',status='REPLACE')
-         write(22,1) vzave,tempaveSalt,tempaveGraph,gsurft 
-         write(22,2) volSalt, volGraph, gsurfsa   
-         write(22,3) maxtemp,tx,ty,tz 
-         write(22,4) vmax,xv1,yv1,zv1 
-         write(22,5) vmin,xv2,yv2,zv2 
+         write(22,1) tempaveGraph,gsurft 
+         write(22,2) vzave,tempaveSalt, roiz3
+         write(22,3) vzave2,tempaveSalt2, roiz2
+         write(22,4) volSalt,volSalt2, volGraph, gsurfsa   
+         write(22,5) maxtemp,tx,ty,tz 
+         write(22,6) vmax,xv1,yv1,zv1 
+         write(22,7) vmin,xv2,yv2,zv2 
+         write(22,8) maxtemp2,tx2,ty2,tz2 
+         write(22,9) vmax2,xv3,yv3,zv3 
+         write(22,10) vmin2,xv4,yv4,zv4 
+         write(22,11) roiz1,roiz2,roiz3 
          close(22)
       endif
-1     format(1p4e16.8,' avg vz/ts/tg/tsurfg')
-2     format(1p3e16.8,' Vs/Vg/SAg')
-3     format(1p4e16.8,' maxtemp/x/y/z')
-4     format(1p4e16.8,' vmax/x/y/z')
-5     format(1p4e16.8,' vmin/x/y/z')
+1     format(1p2e16.8,' tg/tsurfg')
+2     format(1p3e16.8,' avg vz1/ts1/roiz3')
+3     format(1p3e16.8,' avg vz2/ts2/roiz2')
+4     format(1p4e16.8,' Vs/Vs2/Vg/SAg')
+5     format(1p4e16.8,' maxtemp/x/y/z')
+6     format(1p4e16.8,' vmax/x/y/z')
+7     format(1p4e16.8,' vmin/x/y/z')
+8     format(1p4e16.8,' maxtemp2/x/y/z')
+9     format(1p4e16.8,' vmax2/x/y/z')
+10    format(1p4e16.8,' vmin2/x/y/z')
+11    format(1p3e16.8,' roiz1/roiz2/roiz3')
      
       return
       end
