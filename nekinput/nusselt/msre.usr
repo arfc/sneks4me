@@ -176,36 +176,29 @@ c      implicit none
       real wk(lx1*ly1*lz1)
       real dq, aq
 
-      integer ierr, myrank, filehandle
-      integer lineLength, record, nproc
-      character lf
       character(len = 13) :: opfile
-      parameter (lineLength = 100)
-      parameter (lf = Achar(10))
-      character(len = lineLength + 1) :: line
 
       real xmax, xmin, ymax, ymin, zmax, zmin
-      real dtdzavg, azave, tsolid, sasolid, htz
-      real tbulk, plenvol, roiz1, denom
+      real dtdzavg, azave, tsolid, sasolid, k_solid, k_fluid
+      real Nu
+      real tbulk, plenvol, roiz1, roiz2, denom
 
-      roiz1 = 1.0 ! start of fluid bulk region
+      call load_fld('AVGmsre0.f00001')
+      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
+
+      roiz1 = 1.0 ! start of region of interest - depends on geom
+      roiz2 = zmax - (5*dh) ! end region of interest away from outflow BC
 
       ntot = lx1*ly1*lz1*nelt 
  
-      call load_fld('msre0.f00001')
-      call domain_size(xmin,xmax,ymin,ymax,zmin,zmax)
-      call gradm1(dtdx,dtdy,dtdz,t)
-      call rone(one,ntot)
-
-      call outpost(vx,vy,vz,pr,dtdz,'foo')
- 
-      tbulk = 0.0
-      denom = 0.0
+      tbulk = 0.0  ! stores fluid bulk temp
+      denom = 0.0  ! for calculating vol. avg. of fluid temp
 
       do e = 1, lelt
        do i = 1, lx1*ly1*lz1
         eg = lglel(e)
-        if (zm1(i,1,1,e).ge.roiz1 .and. eg.le.nelgv) then
+        if ((zm1(i,1,1,e).ge.roiz1 .and. zm1(i,1,1,e).le.roiz2)  ! T_bulk
+     $        eg.le.nelgv) then
             tbulk = tbulk + (t(i,1,1,e,1)*vz(i,1,1,e)
      $      *bm1(i,1,1,e))
             denom = denom + (vz(i,1,1,e)*bm1(i,1,1,e))
@@ -222,18 +215,19 @@ c      implicit none
       tsolid = 0.0
       sasolid = 0.0
 
+      call gradm1(dtdx,dtdy,dtdz,t)
+      call rone(one,ntot)
+      call outpost(vx,vy,vz,pr,dtdz,'foo')
 
       do e = 1, nelt
        do f = 1, 2*ndim
         id_face2 = bc(5,f,e,2)
         if (id_face2.eq.400) then
-c           dtdzavg = dtdzavg + facint_v(dtdz,area,f,e)
-c           azave = azave + facint_v(one,area,f,e)
-            call surface_flux_area(dq,aq,dtdx,dtdy,dtdz,e,f,wk) ! DECLARE WK!!!
+            call surface_flux_area(dq,aq,dtdx,dtdy,dtdz,e,f,wk) ! |dT/dz| 
             dtdzavg = dtdzavg + dq
             azave = azave + aq                     
         endif
-        if (id_face2.eq.11) then
+        if (id_face2.eq.11) then                     ! T_solid
            tsolid = tsolid + facint_v(t,area,f,e)
            sasolid = sasolid + facint_v(one,area,f,e)
         endif
@@ -247,17 +241,16 @@ c           azave = azave + facint_v(one,area,f,e)
       sasolid = glsum(sasolid,1)
       tsolid = tsolid/sasolid
 
-      conduct_si = 1.43651 ! salt thermal conductivity, SI units
- 
-      htz = dtdzavg/azave/(tbulk-tsolid)
-      htz = htz*(dhsi**3) ! re-dimensionalise with hydraulic dia
-      htz = conduct_si*htz ! times salt thermal conductivity, SI units
+      k_solid = 13 ! graphite axial conductivity (conservative)- TM 3229
+      k_fluid = 0.83 ! salt conductivity - TM 3229
+      
+      Nu = (k_solid/k_fluid)*(-dtdzavg)*(tsolid - tbulk)      
 
-      opfile = 'heatzav.data'
+      opfile = 'nusselt.data'
 
       open(unit=22,file=opfile)
-      if (nio.eq.0) write(22,1) htz, dtdzavg, azave, tsolid, tbulk
-1     format(1p5e16.8,' avgtemps')
+      if (nio.eq.0) write(22,1) Nu, dtdzavg, azave, tsolid, tbulk
+1     format(1p5e16.8,' Nu;dT/dz;A;Tg;Tbulk')
       close(22)
       
       return
@@ -285,8 +278,6 @@ c      implicit none
       zc2=1.0/dh
       zc3=2.0/dh
       uav=0.2194
-
-      ifuservp = .true. 
 
       return
       
